@@ -20,7 +20,7 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        $token = $user->createToken('apiToken')->plainTextToken;
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         $cookie = cookie('token', $token, 60*24);
 
@@ -42,12 +42,13 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $token = $user->createToken('apiToken')->plainTextToken;
+        $token = $user->createToken('auth_token')->plainTextToken;
 
-        $cookie = cookie('token', $token, 60 * 24);
-
+        $cookie = cookie('token', $token, 60 * 24); // 1 day
+        
         return response()->json([
             'user' => new UserResource($user),
+            'token' => $token
         ], 200)->withCookie($cookie);
     }
 
@@ -59,7 +60,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Logged out successfully!',
-        ]);
+        ])->withCookie($cookie);
     }
 
     // get the authenticated user method

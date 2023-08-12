@@ -3,7 +3,6 @@ import { Link, NavLink } from "react-router-dom";
 import { Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, ChevronDownIcon } from "@heroicons/react/24/solid";
 
-
 const Header = () => {
     return (
         <header className="container">

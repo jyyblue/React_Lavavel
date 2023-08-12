@@ -198,6 +198,7 @@ export default function Login() {
                                                 name="email"
                                                 type="email"
                                                 autoComplete="email"
+                                                defaultValue="admin@admin.com"
                                                 required
                                                 className="w-full rounded-lg border border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                             />
@@ -226,6 +227,7 @@ export default function Login() {
                                                 id="password"
                                                 name="password"
                                                 type="password"
+                                                defaultValue="dolsi0924!D"
                                                 autoComplete="current-password"
                                                 required
                                                 className="w-full rounded-lg border border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
