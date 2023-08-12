@@ -37,7 +37,7 @@ export default function Login() {
         <div>
             <main className="flex flex-col items-center justify-center mt-32">
                 <Header />
-                <div className="w-full rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                <div className="w-full rounded-sm  bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                     <div className="flex flex-wrap items-center">
                         <div className="hidden w-full xl:block xl:w-1/2">
                             <div className="py-17.5 px-26 text-center">
@@ -174,85 +174,76 @@ export default function Login() {
                                 </span>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                    <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                        <img
-                            className="mx-auto h-10 w-auto"
-                            src="/assets/image/logo.jpg"
-                            alt="Your Company"
-                        />
-                        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                            Sign in to your account
-                        </h2>
-                    </div>
-
-                    <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                        <form
-                            className="space-y-6"
-                            action="#"
-                            method="POST"
-                            onSubmit={handleSubmit}
-                        >
-                            <div>
-                                <label
-                                    htmlFor="email"
-                                    className="block text-sm font-medium leading-6 text-gray-900"
+                        <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
+                            <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
+                                <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+                                    Sign in to your account
+                                </h2>
+                                <form
+                                    className="space-y-6"
+                                    action="#"
+                                    method="POST"
+                                    onSubmit={handleSubmit}
                                 >
-                                    Email address
-                                </label>
-                                <div className="mt-2">
-                                    <input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        autoComplete="email"
-                                        required
-                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <div className="flex items-center justify-between">
-                                    <label
-                                        htmlFor="password"
-                                        className="block text-sm font-medium leading-6 text-gray-900"
-                                    >
-                                        Password
-                                    </label>
-                                    <div className="text-sm">
-                                        <a
-                                            href="#"
-                                            className="font-semibold text-indigo-600 hover:text-indigo-500"
+                                    <div>
+                                        <label
+                                            htmlFor="email"
+                                            className="block text-sm font-medium leading-6 text-gray-900"
                                         >
-                                            Forgot password?
-                                        </a>
+                                            Email address
+                                </label>
+                                        <div className="mt-2">
+                                            <input
+                                                id="email"
+                                                name="email"
+                                                type="email"
+                                                autoComplete="email"
+                                                required
+                                                className="w-full rounded-lg border border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="mt-2">
-                                    <input
-                                        id="password"
-                                        name="password"
-                                        type="password"
-                                        autoComplete="current-password"
-                                        required
-                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                </div>
-                            </div>
 
-                            <div>
-                                <button
-                                    type="submit"
-                                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                >
-                                    Sign in
+                                    <div>
+                                        <div className="flex items-center justify-between">
+                                            <label
+                                                htmlFor="password"
+                                                className="block text-sm font-medium leading-6 text-gray-900"
+                                            >
+                                                Password
+                                    </label>
+                                            <div className="text-sm">
+                                                <a
+                                                    href="#"
+                                                    className="font-semibold text-indigo-600 hover:text-indigo-500"
+                                                >
+                                                    Forgot password?
+                                        </a>
+                                            </div>
+                                        </div>
+                                        <div className="mt-2">
+                                            <input
+                                                id="password"
+                                                name="password"
+                                                type="password"
+                                                autoComplete="current-password"
+                                                required
+                                                className="w-full rounded-lg border border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <button
+                                            type="submit"
+                                            className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
+                                            >
+                                            Sign in
                                 </button>
+                                    </div>
+                                </form>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
                 <Footer />
