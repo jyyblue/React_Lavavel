@@ -1,8 +1,8 @@
 import { Menu, Transition } from "@headlessui/react";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { Bars3Icon } from "@heroicons/react/20/solid";
-import Header from "../layout/Header";
-import Footer from "../layout/Footer";
+import Header from "../component/FHeader";
+import Footer from "../component/Footer";
 export default function Home() {
     return (
         <div>

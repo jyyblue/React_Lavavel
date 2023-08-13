@@ -1,8 +1,8 @@
 import React from "react";
 import { Navigate, Link } from 'react-router-dom';
 
-import Header from "../../layout/Header";
-import Footer from "../../layout/Footer";
+import Header from "../../component/FHeader";
+import Footer from "../../component/Footer";
 import axios from '../../services/axios';
 import { useAuth } from '../../context/AuthContext';
 
