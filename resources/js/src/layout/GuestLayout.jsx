@@ -7,7 +7,7 @@ export default function GuestLayout() {
 
 	// if user is logged in, redirect to profile page
 	if (user) {
-		return <Navigate to="/profile" />;
+		return <Navigate to="/dashboard" />;
 	}
 	return (
 		<>

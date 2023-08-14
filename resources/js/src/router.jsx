@@ -7,8 +7,8 @@ import GuestLayout from './layout/GuestLayout';
 import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
-import Profile from './pages/Profile';
-
+import Dashboard from "./pages/Dashboard";
+import GoogleSeller from "./pages/GoogleSeller";
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -33,8 +33,12 @@ const router = createBrowserRouter([
 		element: <ProtectedLayout />,
 		children: [
 			{
-				path: '/profile',
-				element: <Profile />,
+				path: '/gseller',
+				element: <GoogleSeller />,
+			},
+			{
+				path: '/dashboard',
+				element: <Dashboard />,
 			},
 		],
 	},

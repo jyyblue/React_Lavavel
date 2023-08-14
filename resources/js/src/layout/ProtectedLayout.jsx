@@ -6,7 +6,7 @@ import AuthHeader from '../component/AuthHeader';
 import Header from '../component/Header';
 import Sidebar from '../component/Sidebar';
 
-export default function DefaultLayout() {
+export default function ProtectedLayout() {
     const { user, setUser } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -16,7 +16,7 @@ export default function DefaultLayout() {
             try {
                 const resp = await axios.get('/user');
                 if (resp.status === 200) {
-                    setUser(resp1.data.data);
+                    setUser(resp.data.data);
                 }
             } catch (error) {
                 // if (error.response.status === 401) {
