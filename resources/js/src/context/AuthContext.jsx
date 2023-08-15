@@ -5,17 +5,11 @@ const AuthContent = createContext({
 	user: null,
 	setUser: () => {},
 	csrfToken: () => {},
-	token: null,
-	setToken: () => {},
 });
 
 export const AuthProvider = ({ children }) => {
 	const [user, _setUser] = useState(
 		JSON.parse(localStorage.getItem('user')) || null
-	);
-
-	const [token, _setToken] = useState(
-		localStorage.getItem('token') || null
 	);
 
 	// set user to local storage
@@ -30,18 +24,6 @@ export const AuthProvider = ({ children }) => {
 		_setUser(user);
 	};
 
-		// set user to local storage
-		const setToken = (token) => {
-			console.log('token: ', token);
-			if (token) {
-				console.log('set user to local storage');
-				localStorage.setItem('token', token);
-			} else {
-				localStorage.removeItem('token');
-			}
-			_setToken(token);
-		};
-	
 	// csrf token generation for guest methods
 	const csrfToken = async () => {
 		await axios.get('http://localhost:8000/sanctum/csrf-cookie');
@@ -49,7 +31,7 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	return (
-		<AuthContent.Provider value={{ user, setUser, csrfToken, token, setToken }}>
+		<AuthContent.Provider value={{ user, setUser, csrfToken }}>
 			{children}
 		</AuthContent.Provider>
 	);

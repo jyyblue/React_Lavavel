@@ -19,10 +19,10 @@ export default function ProtectedLayout() {
                     setUser(resp.data.data);
                 }
             } catch (error) {
-                // if (error.response.status === 401) {
-                // 	localStorage.removeItem('user');
-                // 	window.location.href = '/';
-                // }
+                if (error.response.status === 401) {
+                	localStorage.removeItem('user');
+                	window.location.href = '/';
+                }
             }
         })();
     }, []);

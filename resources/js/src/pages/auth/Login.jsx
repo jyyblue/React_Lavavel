@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
 
-    const { setUser, setToken } = useAuth();
+    const { setUser, csrfToken } = useAuth();
     const [error, setError] = React.useState(null);
 
     // login user
@@ -18,14 +18,12 @@ export default function Login() {
             email: email.value,
             password: password.value,
         };
-        // await csrfToken();
+        await csrfToken();
         try {
             const resp = await axios.post('/login', body);
-            console.log(2222222);
             if (resp.status === 200) {
                 setUser(resp.data.user);
-                setToken(resp.data.token);
-                return <Navigate to="/dashboard" />;
+                return <Navigate to="/profile" />;
             }
         } catch (error) {
             if (error.response.status === 401) {

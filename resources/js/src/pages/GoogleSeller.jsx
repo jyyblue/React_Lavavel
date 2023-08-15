@@ -1,41 +1,24 @@
 import React, { useState, useReducer, useEffect } from "react";
 import axios from "../services/axios";
 import {
-    // Column,
-    // Table,
-    // ColumnDef,
     useReactTable,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     flexRender,
-    // RowData,
 } from "@tanstack/react-table";
 
-const defaultData = [
-    {
-        firstName: "tanner",
-        age: "",
-    },
-    {
-        firstName: "tandy",
-        lastName: "miller",
-        age: 40,
-        visits: 40,
-        status: "Single",
-        progress: 80,
-    },
-];
 
 // Give our default column cell renderer editing superpowers!
 const defaultColumn = {
-    cell: ({ getValue, row: { index }, column: { id }, table }) => {
+    cell: ({ getValue, row: { index, name }, column: { id }, table }) => {
         const initialValue = getValue();
         // We need to keep and update the state of the cell normally
         const [value, setValue] = useState(initialValue);
 
         // When the input is blurred, we'll call our table meta's updateData function
         const onBlur = () => {
+            console.log(name);
             table.options.meta?.updateData(index, id, value);
         };
 
@@ -75,27 +58,33 @@ export default function GoogleSeller() {
         () => [
             {
                 header: "Name",
-                accessorKey: "firstName",
+                // accessorKey: "name",
+                accessorFn: row => row.name,
+                id: 'name',
                 footer: (props) => props.column.id,
             },
             {
                 header: "Email",
-                accessorKey: "age",
+                accessorFn: row => row.email,
+                id: 'email',
                 footer: (props) => props.column.id,
             },
         ],
         []
     );
+    const [data, setData] = useState([]);
 
     useEffect(()=> {
         async function getData () {
             const resp = await axios.post('/getGoogleSeller', {});
+            if(resp.status == 200) {
+                setData(resp.data.data);
+            }
             console.log(resp);
         }
         getData();
     }, []);
 
-    const [data, setData] = useState(() => defaultData);
 
     const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
 
@@ -109,16 +98,27 @@ export default function GoogleSeller() {
         autoResetPageIndex,
         // Provide our updateData function to our table meta
         meta: {
-            updateData: (rowIndex, columnId, value) => {
+            updateData: async (rowIndex, columnId, value) => {
                 // Skip page index reset until after next rerender
                 skipAutoResetPageIndex();
+                console.log(rowIndex, columnId, value);
+                
                 setData((old) =>
                     old.map((row, index) => {
                         if (index === rowIndex) {
-                            return {
-                                ...old[rowIndex],
-                                [columnId]: value,
-                            };
+                            let data = old[rowIndex];
+                            data[columnId] = value;
+                            const f = async (data)=> {
+                                const resp = await axios.post('/updateGoogleSeller', data);
+                                return resp;
+                            }
+                            f(data).then((ret) => {
+                                return {
+                                    ...old[rowIndex],
+                                    [columnId]: value,
+                                };
+                            });
+                                
                         }
                         return row;
                     })
