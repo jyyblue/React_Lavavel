@@ -28,6 +28,7 @@
         "jsvectormap": "^1.5.3",
         "react-apexcharts": "^1.4.1",
         "react-router-dom": "^6.14.2",
-        "react-table": "^7.8.0"
+        "react-table": "^7.8.0",
+        "react-toastify": "^9.1.3"
     }
 }

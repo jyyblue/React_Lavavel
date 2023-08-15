@@ -7,19 +7,21 @@ import {
     getPaginationRowModel,
     flexRender,
 } from "@tanstack/react-table";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Give our default column cell renderer editing superpowers!
 const defaultColumn = {
-    cell: ({ getValue, row: { index, name }, column: { id }, table }) => {
+    cell: ({ getValue, row: { index }, column: { id }, table }) => {
         const initialValue = getValue();
         // We need to keep and update the state of the cell normally
         const [value, setValue] = useState(initialValue);
 
         // When the input is blurred, we'll call our table meta's updateData function
         const onBlur = () => {
-            console.log(name);
-            table.options.meta?.updateData(index, id, value);
+            if(initialValue !== value) {
+                table.options.meta?.updateData(index, id, value);
+            }
         };
 
         // If the initialValue is changed external, sync it up with our state
@@ -27,14 +29,26 @@ const defaultColumn = {
             setValue(initialValue);
         }, [initialValue]);
 
-        return (
-            <input
-                className="w-full rounded-lg border border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                onBlur={onBlur}
-            />
-        );
+        if(id == 'email') {
+            return (
+                <input
+                    className="w-full rounded-lg border border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-gray-100 dark:focus:border-primary"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    onBlur={onBlur}
+                />
+            );
+        }else {
+            return (
+                <input
+                    className="w-full rounded-lg border border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    value={value}
+                    disabled
+                    onChange={(e) => setValue(e.target.value)}
+                    onBlur={onBlur}
+                />
+            );
+        }
     },
 };
 
@@ -113,6 +127,16 @@ export default function GoogleSeller() {
                                 return resp;
                             }
                             f(data).then((ret) => {
+                                toast('Updated Successfully!', {
+                                    position: "bottom-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "colored",
+                                    });
                                 return {
                                     ...old[rowIndex],
                                     [columnId]: value,
@@ -130,6 +154,14 @@ export default function GoogleSeller() {
     return (
         <div className="p-2">
             <div className="h-2" />
+            <div>
+                <button className="
+                dark:bg-primary border border-primary cursor-pointer
+                dark:hover:bg-opacity-80 p-3 rounded-lg text-white transition mr-3">Export</button>
+                <button className="
+                dark:bg-primary border border-primary cursor-pointer
+                dark:hover:bg-opacity-80 p-3 rounded-lg text-white transition">Import</button>
+            </div>
             <table className="w-full">
                 <thead>
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -253,6 +285,7 @@ export default function GoogleSeller() {
                     ))}
                 </select>
             </div>
+            <ToastContainer />
         </div>
     );
 }
