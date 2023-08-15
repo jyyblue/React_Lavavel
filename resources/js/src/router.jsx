@@ -9,6 +9,7 @@ import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import Dashboard from "./pages/Dashboard";
 import GoogleSeller from "./pages/GoogleSeller";
+import AmazonSeller from "./pages/AmazonSeller";
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
 			{
 				path: '/gseller',
 				element: <GoogleSeller />,
+			},
+			{
+				path: '/aseller',
+				element: <AmazonSeller />,
 			},
 			{
 				path: '/dashboard',

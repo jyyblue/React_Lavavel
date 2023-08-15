@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AmazonResults extends Model
+class AmazonSeller extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,7 @@ class AmazonResults extends Model
      *
      * @var string
      */
-    protected $table = 'amazon_results';
+    protected $table = 'amazon_seller';
 
     /**
      * Indicates if the model should be timestamped.
@@ -29,12 +29,7 @@ class AmazonResults extends Model
      * @var array
      */
     protected $fillable = [
-        'product_id',
-        'total_price',
-        'title',
-        'seller',
-        'item_price',
-        'offer_link',
-        'seller_name',
+        'name',
+        'email',
     ];
 }

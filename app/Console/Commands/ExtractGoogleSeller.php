@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\GoogleResults;
 use Illuminate\Console\Command;
 use App\Models\GoogleSeller;
-use Illuminate\Support\Facades\Log;
 
 class ExtractGoogleSeller extends Command
 {

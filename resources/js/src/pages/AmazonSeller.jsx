@@ -67,10 +67,10 @@ function useSkipper() {
     return [shouldSkip, skip];
 }
 
-export default function GoogleSeller() {
+export default function AmazonSeller() {
     const [importFile, setImportFile] = useState('');
     const openExport = () => {
-        window.open(api_url +'/googleSeller/export', '_blank');
+        window.open(api_url +'/amazonSeller/export', '_blank');
     }
     const inputFile = useRef(null) 
     const onImportClick = () => {
@@ -95,7 +95,7 @@ export default function GoogleSeller() {
         let importData = new FormData();
         importData.append("file", file);
         // 👇 Uploading the file using the fetch API to the server
-        axios.post(api_url + '/googleSeller/import', importData, config).then((res) => {
+        axios.post(api_url + '/amazonSeller/import', importData, config).then((res) => {
             console.log(res);
             toast('Imported Successfully!');
             setImportFile('');
@@ -123,7 +123,7 @@ export default function GoogleSeller() {
     );
     const [data, setData] = useState([]);
     async function getData () {
-        const resp = await axios.post('/getGoogleSeller', {});
+        const resp = await axios.post('/getAmazonSeller', {});
         if(resp.status == 200) {
             setData(resp.data.data);
         }
@@ -156,7 +156,7 @@ export default function GoogleSeller() {
                             let data = old[rowIndex];
                             data[columnId] = value;
                             const f = async (data)=> {
-                                const resp = await axios.post('/updateGoogleSeller', data);
+                                const resp = await axios.post('/updateAmazonSeller', data);
                                 return resp;
                             }
                             f(data).then((ret) => {
@@ -187,7 +187,7 @@ export default function GoogleSeller() {
     return (
         <div className="p-2">
             <div className="h-2" />
-            <div className="mb-3 text-lg font-bold"><h1>Sellers / Google</h1></div>
+            <div className="mb-3 text-lg font-bold"><h1>Sellers / Amazon</h1></div>
             <div>
                 <button className="
                 dark:bg-primary border border-primary cursor-pointer

@@ -1,7 +1,7 @@
 import Axios from 'axios';
-
+import { api_url } from '../constant';
 const axios = Axios.create({
-	baseURL: "http://127.0.0.1:8000/api",
+	baseURL: api_url,
 	withCredentials: true,
 	headers: {
 		"Content-Type": "application/json",
