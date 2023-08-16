@@ -34,13 +34,13 @@ class ScrapeAmazonIT extends Command
         try {
             $request = $this->markProcessedProduct();
 
-            do {
-                Log::info(strlen($request['asin']) . '---------');
-                $access_token = $this->getAccessToken();
-                // $this->findOfferWithSku($access_token, $request['sku']);
-                $this->findOfferWithAsin($access_token, $request['asin']);
-                $request = $this->markProcessedProduct();
-            } while (strlen($request['asin']) > 20);
+            // do {
+            //     Log::info(strlen($request['asin']) . '---------');
+            $access_token = $this->getAccessToken();
+            // $this->findOfferWithSku($access_token, $request['sku']);
+            $this->findOfferWithAsin($access_token, $request['asin']);
+            // $request = $this->markProcessedProduct();
+            // } while (strlen($request['asin']) > 20);
         } catch (\Exception $e) {
             Log::info('Error: handle' . $e->getMessage());
         }
