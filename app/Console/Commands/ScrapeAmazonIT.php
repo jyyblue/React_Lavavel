@@ -33,14 +33,14 @@ class ScrapeAmazonIT extends Command
     {
         try {
             $request = $this->markProcessedProduct();
+            $access_token = $this->getAccessToken();
+            $this->findOfferWithAsin($access_token, $request['asin']);
 
             // do {
-            //     Log::info(strlen($request['asin']) . '---------');
-            $access_token = $this->getAccessToken();
-            // $this->findOfferWithSku($access_token, $request['sku']);
-            $this->findOfferWithAsin($access_token, $request['asin']);
-            // $request = $this->markProcessedProduct();
-            // } while (strlen($request['asin']) > 20);
+            //     $access_token = $this->getAccessToken();
+            //     $this->findOfferWithAsin($access_token, $request['asin']);
+            //     $request = $this->markProcessedProduct();
+            // } while (strlen($request['asin']) > 0);
         } catch (\Exception $e) {
             Log::info('Error: handle' . $e->getMessage());
         }
@@ -144,7 +144,8 @@ class ScrapeAmazonIT extends Command
         try {
             if (isset($result->responses)) {
                 $responses = $result->responses;
-                foreach ($responses as $key => $resp) {
+                for ($key = 0; $key < count($responses); $key++) {
+                    $resp = $responses[$key];
                     $status = isset($resp->status) ? $resp->status : array();
                     $statusCode = isset($status->statusCode) ? $status->statusCode : 0;
                     if ($statusCode == 200) {
@@ -166,6 +167,7 @@ class ScrapeAmazonIT extends Command
                                     $data['listing_price'] = $LPrice;
                                     $data['ship_price'] = $SPrice;
                                     $data['seller'] = $SellerId;
+                                    Log::info('processAsin:' . $asin);
                                     $this->storeData($data);
                                 }
                             }
@@ -190,7 +192,7 @@ class ScrapeAmazonIT extends Command
         $ship_price = $data['ship_price'] ? $data['ship_price'] : 0;
         $seller = $data['seller'] ? $data['seller'] : '';
         $total_price = (float)$listing_price + (float)$ship_price;
-        $sellerName = $this->getSellerName($seller);
+        $sellerName = 'xxx'; // $this->getSellerName($seller);
         $product = Product::where('asin', $asin)->first();
         $product_id = $product->id;
         $title = $product->title;
@@ -208,21 +210,21 @@ class ScrapeAmazonIT extends Command
         ]);
         sleep(1);
         // store in google sheet
-        // if ($total_price > 0) {
-        //     $append = [
-        //         $product_id ? (int)$product_id : 0,
-        //         $title ? $title : '',
-        //         $total_price ? (float)$total_price : 0,
-        //         $seller ? $seller  : '',
-        //         $sellerName,
-        //         $listing_price ? $listing_price  : 0,
-        //         'https://amazon.it/s?me=' . $seller . '&marketplaceID=' . env('AMAZON_MARKETPLACE_ID'),
-        //         now()->toDateTimeString(),
-        //     ];
-        //     Sheets::spreadsheet(config('sheets.amazon_spreadsheet_id'))
-        //         ->sheet(config('sheets.amazon_sheet_id'))
-        //         ->append([$append]);
-        // }
+        if ($total_price > 0) {
+            $append = [
+                $product_id ? (int)$product_id : 0,
+                $title ? $title : '',
+                $total_price ? (float)$total_price : 0,
+                $seller ? $seller  : '',
+                $sellerName,
+                $listing_price ? $listing_price  : 0,
+                'https://amazon.it/s?me=' . $seller . '&marketplaceID=' . env('AMAZON_MARKETPLACE_ID'),
+                now()->toDateTimeString(),
+            ];
+            Sheets::spreadsheet(config('sheets.amazon_spreadsheet_id'))
+                ->sheet(config('sheets.amazon_sheet_id'))
+                ->append([$append]);
+        }
     }
 
     private function markProcessedProduct()
@@ -323,8 +325,10 @@ class ScrapeAmazonIT extends Command
             if (gettype($response) === 'string') {
                 $document = new Document($response, false);
                 $sellerName = count($document->find('#seller-name')) > 0 ? $document->find('#seller-name')[0]->text() : '';
+                Log::info('seller Name: ' . $sellerName);
                 return trim($sellerName);
             }
+
             return '';
         } catch (\Exception $e) {
             Log::info('Error getSellerName:' . $e->getMessage());

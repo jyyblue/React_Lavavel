@@ -58,9 +58,9 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            Admin
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs"></span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
@@ -95,7 +95,7 @@ const DropdownUser = () => {
           dropdownOpen === true ? 'block' : 'hidden'
         }`}
       >
-        <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
+        <ul style={{ display: 'none'}} className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
           <li>
             <Link
               to="/profile"
