@@ -1,0 +1,56 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-e6832d84.css",
+    "isEntry": true,
+    "src": "resources/css/app.css"
+  },
+  "resources/js/app.css": {
+    "file": "assets/app-d5af144e.css",
+    "src": "resources/js/app.css"
+  },
+  "resources/js/app.js": {
+    "assets": [
+      "assets/user-01-b007ff3f.png",
+      "assets/logo-162ee3ec.svg",
+      "assets/brand-01-10b0313f.svg",
+      "assets/brand-02-31d534b8.svg",
+      "assets/brand-03-6cc453d1.svg",
+      "assets/brand-04-1c41292a.svg",
+      "assets/brand-05-b51c44b2.svg"
+    ],
+    "css": [
+      "assets/app-d5af144e.css"
+    ],
+    "file": "assets/app-e279a670.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  },
+  "resources/js/src/images/brand/brand-01.svg": {
+    "file": "assets/brand-01-10b0313f.svg",
+    "src": "resources/js/src/images/brand/brand-01.svg"
+  },
+  "resources/js/src/images/brand/brand-02.svg": {
+    "file": "assets/brand-02-31d534b8.svg",
+    "src": "resources/js/src/images/brand/brand-02.svg"
+  },
+  "resources/js/src/images/brand/brand-03.svg": {
+    "file": "assets/brand-03-6cc453d1.svg",
+    "src": "resources/js/src/images/brand/brand-03.svg"
+  },
+  "resources/js/src/images/brand/brand-04.svg": {
+    "file": "assets/brand-04-1c41292a.svg",
+    "src": "resources/js/src/images/brand/brand-04.svg"
+  },
+  "resources/js/src/images/brand/brand-05.svg": {
+    "file": "assets/brand-05-b51c44b2.svg",
+    "src": "resources/js/src/images/brand/brand-05.svg"
+  },
+  "resources/js/src/images/logo/logo.svg": {
+    "file": "assets/logo-162ee3ec.svg",
+    "src": "resources/js/src/images/logo/logo.svg"
+  },
+  "resources/js/src/images/user/user-01.png": {
+    "file": "assets/user-01-b007ff3f.png",
+    "src": "resources/js/src/images/user/user-01.png"
+  }
+}
