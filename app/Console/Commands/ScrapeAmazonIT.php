@@ -216,10 +216,10 @@ class ScrapeAmazonIT extends Command
                 $title ? $title : '',
                 $total_price ? (float)$total_price : 0,
                 $seller ? $seller  : '',
-                $sellerName,
                 $listing_price ? $listing_price  : 0,
                 'https://amazon.it/s?me=' . $seller . '&marketplaceID=' . env('AMAZON_MARKETPLACE_ID'),
                 now()->toDateTimeString(),
+                $sellerName,
             ];
             Sheets::spreadsheet(config('sheets.amazon_spreadsheet_id'))
                 ->sheet(config('sheets.amazon_sheet_id'))
