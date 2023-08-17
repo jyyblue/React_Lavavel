@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import axios from 'axios';
+import { api_url } from '../constant';
 
 const AuthContent = createContext({
 	user: null,
@@ -26,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
 	// csrf token generation for guest methods
 	const csrfToken = async () => {
-		await axios.get('http://localhost:8000/sanctum/csrf-cookie');
+		await axios.get(api_url +'/sanctum/csrf-cookie');
 		return true;
 	};
 
