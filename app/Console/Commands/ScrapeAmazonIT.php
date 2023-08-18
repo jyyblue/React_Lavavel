@@ -33,8 +33,11 @@ class ScrapeAmazonIT extends Command
     {
         try {
             $request = $this->markProcessedProduct();
-            $access_token = $this->getAccessToken();
-            $this->findOfferWithAsin($access_token, $request['asin']);
+            $count = $request['count'];
+            if($count > 0) {
+                $access_token = $this->getAccessToken();
+                $this->findOfferWithAsin($access_token, $request['asin']);
+            }
 
             // do {
             //     $access_token = $this->getAccessToken();
@@ -264,13 +267,15 @@ class ScrapeAmazonIT extends Command
             $request_asin_str = json_encode($request_asin);
             return array(
                 'sku' => $request_sku_str,
-                'asin' => $request_asin_str
+                'asin' => $request_asin_str,
+                'count' => count($product_list),
             );
         } catch (\Exception $e) {
             Log::info('Error: getAccessToken' . $e->getMessage());
             return array(
                 'sku' => '',
-                'asin' => ''
+                'asin' => '',
+                'count' => 0,
             );
         }
     }
