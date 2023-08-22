@@ -10,6 +10,7 @@ import Signup from "./pages/auth/Signup";
 import Dashboard from "./pages/Dashboard";
 import GoogleSeller from "./pages/GoogleSeller";
 import AmazonSeller from "./pages/AmazonSeller";
+import AmazonSellerMail from "./pages/AmazonSellerMail";
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -45,6 +46,11 @@ const router = createBrowserRouter([
 				path: '/dashboard',
 				element: <Dashboard />,
 			},
+			{
+				path: '/amazon-seller-mail',
+				element: <AmazonSellerMail />,
+			},
+			
 		],
 	},
 ]);

@@ -39,11 +39,11 @@ class ScrapeAmazonIT extends Command
                 $this->findOfferWithAsin($access_token, $request['asin']);
             }
 
-            // do {
-            //     $access_token = $this->getAccessToken();
-            //     $this->findOfferWithAsin($access_token, $request['asin']);
-            //     $request = $this->markProcessedProduct();
-            // } while (strlen($request['asin']) > 0);
+            do {
+                $access_token = $this->getAccessToken();
+                $this->findOfferWithAsin($access_token, $request['asin']);
+                $request = $this->markProcessedProduct();
+            } while (strlen($request['asin']) > 0);
         } catch (\Exception $e) {
             Log::info('Error: handle' . $e->getMessage());
         }
@@ -195,7 +195,7 @@ class ScrapeAmazonIT extends Command
         $ship_price = $data['ship_price'] ? $data['ship_price'] : 0;
         $seller = $data['seller'] ? $data['seller'] : '';
         $total_price = (float)$listing_price + (float)$ship_price;
-        $sellerName = 'xxx'; // $this->getSellerName($seller);
+        $sellerName = $this->getSellerName($seller);
         $product = Product::where('asin', $asin)->first();
         $product_id = $product->id;
         $title = $product->title;
@@ -209,7 +209,7 @@ class ScrapeAmazonIT extends Command
             'seller' => $seller,
             'seller_name' => $sellerName,
             'item_price' => $listing_price,
-            'offer_link' => $ship_price,
+            'offer_link' => 'https://amazon.it/s?me=' . $seller . '&marketplaceID=' . env('AMAZON_MARKETPLACE_ID'),
         ]);
         sleep(1);
         // store in google sheet
@@ -224,9 +224,9 @@ class ScrapeAmazonIT extends Command
                 now()->toDateTimeString(),
                 $sellerName,
             ];
-            Sheets::spreadsheet(config('sheets.amazon_spreadsheet_id'))
-                ->sheet(config('sheets.amazon_sheet_id'))
-                ->append([$append]);
+            // Sheets::spreadsheet(config('sheets.amazon_spreadsheet_id'))
+            //     ->sheet(config('sheets.amazon_sheet_id'))
+            //     ->append([$append]);
         }
     }
 

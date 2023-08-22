@@ -29,10 +29,10 @@ const defaultColumn = {
             setValue(initialValue);
         }, [initialValue]);
 
-        if(id == 'email') {
+        if(id == 'email' || id == 'sales_agent_name' || id == 'sales_agent_email') {
             return (
                 <input
-                    className="w-full rounded-lg border border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-gray-100 dark:focus:border-primary"
+                    className="w-full border-b border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-gray-100 dark:focus:border-primary"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     onBlur={onBlur}
@@ -41,7 +41,7 @@ const defaultColumn = {
         }else {
             return (
                 <input
-                    className="w-full rounded-lg border border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    className="w-full border-b border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     value={value}
                     disabled
                     onChange={(e) => setValue(e.target.value)}
@@ -116,6 +116,18 @@ export default function AmazonSeller() {
                 header: "Email",
                 accessorFn: row => row.email,
                 id: 'email',
+                footer: (props) => props.column.id,
+            },
+            {
+                header: "SALES AGENT NAME",
+                accessorFn: row => row.sales_agent_name,
+                id: 'sales_agent_name',
+                footer: (props) => props.column.id,
+            },
+            {
+                header: "SALES AGENT EMAIL",
+                accessorFn: row => row.sales_agent_email,
+                id: 'sales_agent_email',
                 footer: (props) => props.column.id,
             },
         ],

@@ -31,5 +31,7 @@ class GoogleSeller extends Model
     protected $fillable = [
         'name',
         'email',
+        'sales_agent_name',
+        'sales_agent_email',
     ];
 }

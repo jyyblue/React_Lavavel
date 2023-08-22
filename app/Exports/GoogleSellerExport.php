@@ -22,14 +22,18 @@ class GoogleSellerExport implements FromCollection, WithHeadings, WithMapping
         return [
             'Name',
             'Email',
+            'Sales Agent Name',
+            'Sales Agent Email',
         ];
     }
 
-    public function map($movie): array
+    public function map($seller): array
     {
         return [
-            $movie->name,
-            $movie->email,
+            $seller->name,
+            $seller->email,
+            $seller->sales_agent_name,
+            $seller->sales_agent_email,
         ];
     }
 }
