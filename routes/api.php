@@ -30,6 +30,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/updateAmazonSeller', [SellerController::class, 'updateAmazonSeller']);
     Route::get('amazonSeller/export', [SellerController::class, 'exportAmazonSeller']);
     Route::post('amazonSeller/import', [SellerController::class, 'importAmazonSeller']);
+
+    Route::post('/getTopAmazon', [SellerController::class, 'getTopAmazon']);
+    Route::post('/sendAmazonMail', [SellerController::class, 'sendAmazonMail']);
+    Route::post('/getAmazonMail', [SellerController::class, 'getAmazonMail']);
+
+    Route::post('/getTopGoogle', [SellerController::class, 'getTopGoogle']);
+    Route::post('/sendGoogleMail', [SellerController::class, 'sendGoogleMail']);
+    Route::post('/getGoogleMail', [SellerController::class, 'getGoogleMail']);
 });
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();

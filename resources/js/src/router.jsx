@@ -11,6 +11,8 @@ import Dashboard from "./pages/Dashboard";
 import GoogleSeller from "./pages/GoogleSeller";
 import AmazonSeller from "./pages/AmazonSeller";
 import AmazonSellerMail from "./pages/AmazonSellerMail";
+import GoogleSellerMail from "./pages/GoogleSellerMail";
+
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -50,7 +52,10 @@ const router = createBrowserRouter([
 				path: '/amazon-seller-mail',
 				element: <AmazonSellerMail />,
 			},
-			
+			{
+				path: '/google-seller-mail',
+				element: <GoogleSellerMail />,
+			},
 		],
 	},
 ]);

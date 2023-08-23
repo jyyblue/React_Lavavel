@@ -224,9 +224,9 @@ class ScrapeAmazonIT extends Command
                 now()->toDateTimeString(),
                 $sellerName,
             ];
-            // Sheets::spreadsheet(config('sheets.amazon_spreadsheet_id'))
-            //     ->sheet(config('sheets.amazon_sheet_id'))
-            //     ->append([$append]);
+            Sheets::spreadsheet(config('sheets.amazon_spreadsheet_id'))
+                ->sheet(config('sheets.amazon_sheet_id'))
+                ->append([$append]);
         }
     }
 

@@ -3,16 +3,16 @@ import axios from "../services/axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Select from 'react-select';
-import AmazonDiscount from "../component/AmazonDiscount";
-import AmazonMailTable from "../component/AmazonMailTable";
+import GoogleDiscount from "../component/GoogleDiscount";
+import GoogleMailTable from "../component/GoogleMailTable";
 
-export default function AmazonSellerMail() {
+export default function GoogleSellerMail() {
     const [selectSeller, setSelectSeller] = useState(null);
     const [sellerData, setSellerData] = useState([]);
     const [reloadMailTable, setReloadMailTable] = useState(1);
 
     async function getData() {
-        const resp = await axios.post('/getAmazonSeller', {});
+        const resp = await axios.post('/getGoogleSeller', {});
         if (resp.status == 200) {
             let temp = [];
             console.log(resp.data.data)
@@ -37,7 +37,7 @@ export default function AmazonSellerMail() {
         const data = {
             'id': selectSeller.value,
         };
-        const ret = await axios.post('/sendAmazonMail', data);
+        const ret = await axios.post('/sendGoogleMail', data);
         if (ret.status == 200) {
             setReloadMailTable(Math.random());
         }
@@ -50,7 +50,7 @@ export default function AmazonSellerMail() {
     return (
         <div className="p-2">
             <div className="h-2" />
-            <div className="mb-3 text-lg font-bold"><h1>Mail / Amazon</h1></div>
+            <div className="mb-3 text-lg font-bold"><h1>Mail / Google</h1></div>
             <label>Sellers </label>
             <div>
                 <div className="grid grid-cols-12 gap-4">
@@ -69,10 +69,10 @@ export default function AmazonSellerMail() {
             </div>
             <div className="grid grid-cols-12">
                 <div className="col-span-12">
-                    <AmazonDiscount />
+                    <GoogleDiscount />
                 </div>
                 <div className="col-span-12 mt-8">
-                    <AmazonMailTable reload={reloadMailTable} />
+                    <GoogleMailTable reload={reloadMailTable} />
                 </div>
             </div>
             <ToastContainer />

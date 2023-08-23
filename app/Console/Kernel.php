@@ -29,11 +29,11 @@ class Kernel extends ConsoleKernel
     {
         // scrape google and amazon data.
         $schedule->command('app:scrape-amazon-i-t')->everyMinute();
-        // $schedule->command('app:scrape-google-i-t')->everyMinute();
+        $schedule->command('app:scrape-google-i-t')->everyMinute();
 
         // // extract seller.
-        // $schedule->command('app:extract-google-seller')->daily();
-        // $schedule->command('app:extract-amazon-seller')->daily();
+        $schedule->command('app:extract-google-seller')->daily();
+        $schedule->command('app:extract-amazon-seller')->daily();
         
         $schedule->call(function () {
             // mark all product to be refreshed.
