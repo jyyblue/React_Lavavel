@@ -209,7 +209,8 @@ class ScrapeAmazonIT extends Command
             'seller' => $seller,
             'seller_name' => $sellerName,
             'item_price' => $listing_price,
-            'offer_link' => 'https://amazon.it/s?me=' . $seller . '&marketplaceID=' . env('AMAZON_MARKETPLACE_ID'),
+            'offer_link' => 'https://amazon.it/dp/' . $asin,
+            // 'offer_link' => 'https://amazon.it/s?me=' . $seller . '&marketplaceID=' . env('AMAZON_MARKETPLACE_ID'),
         ]);
         sleep(1);
         // store in google sheet
@@ -220,7 +221,8 @@ class ScrapeAmazonIT extends Command
                 $total_price ? (float)$total_price : 0,
                 $seller ? $seller  : '',
                 $listing_price ? $listing_price  : 0,
-                'https://amazon.it/s?me=' . $seller . '&marketplaceID=' . env('AMAZON_MARKETPLACE_ID'),
+                'https://amazon.it/dp/' . $asin,
+                // 'https://amazon.it/s?me=' . $seller . '&marketplaceID=' . env('AMAZON_MARKETPLACE_ID'),
                 now()->toDateTimeString(),
                 $sellerName,
             ];

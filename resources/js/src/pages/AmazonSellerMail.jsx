@@ -20,7 +20,7 @@ export default function AmazonSellerMail() {
                 if (element.email) {
                     const item = {
                         'value': element.id,
-                        'label': element.email,
+                        'label': element.name,
                     };
                     temp.push(item);
                 }

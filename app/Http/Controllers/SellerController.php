@@ -119,6 +119,7 @@ class SellerController extends Controller
         $query = "SELECT 
         ar.total_price, 
         ar.item_price, 
+        CONCAT_WS(' ', ar.seller_name,ar.seller) as seller,
         product.sku, 
         product.price, 
         product.`title`, 
@@ -158,9 +159,12 @@ class SellerController extends Controller
         $mailHistory->status = 'sent';
         $mailHistory->save();
         $data = $this->getAmazonTopDiscount();
-
+        $mailData = [
+            'seller' => $seller,
+            'data' => $data,
+        ];
         Mail::to($seller->email)
-        ->send(new MailAmazonMail($data));
+        ->send(new MailAmazonMail($mailData));
 
         return response()->json([
             'message' => 'message'
@@ -189,6 +193,7 @@ class SellerController extends Controller
         $query = "SELECT 
         ar.total_price, 
         ar.item_price, 
+        ar.seller,
         product.sku, 
         product.price, 
         product.`title`, 
@@ -229,8 +234,12 @@ class SellerController extends Controller
         $mailHistory->save();
         $data = $this->getGoogleTopDiscount();
 
+        $mailData = [
+            'seller' => $seller,
+            'data' => $data,
+        ];
         Mail::to($seller->email)
-        ->send(new MailGoogleMail($data));
+        ->send(new MailGoogleMail($mailData));
 
         return response()->json([
             'message' => 'message'

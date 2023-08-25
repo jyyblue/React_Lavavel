@@ -56,6 +56,12 @@ export default function GoogleDiscount() {
                 footer: (props) => props.column.id,
             },
             {
+                header: "SELLER NAME",
+                accessorFn: row => row.seller,
+                id: 'seller',
+                footer: (props) => props.column.id,
+            },
+            {
                 header: "PRODUCT NAME",
                 accessorFn: row => row.title,
                 id: 'title',

@@ -206,7 +206,7 @@
                                                             </tr>
                                                         </tbody>
                                                     </table>
-                                                    <img class="w-16" src="https://assets.bootstrapemail.com/logos/light/square.png" style="height: auto; line-height: 100%; outline: none; text-decoration: none; display: block; width: 64px; border-style: none; border-width: 0;" width="64">
+                                                    <img class="w-16" src="http://caleffi.casa/assets/image/logo.jpg" style="height: auto; line-height: 100%; outline: none; text-decoration: none; display: block; width: 64px; border-style: none; border-width: 0;" width="64">
                                                     <table class="s-6 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
                                                         <tbody>
                                                             <tr>
@@ -218,7 +218,7 @@
                                                     </table>
                                                     <div class="space-y-4">
                                                         <h1 class="text-4xl fw-800" style="padding-top: 0; padding-bottom: 0; font-weight: 800 !important; vertical-align: baseline; font-size: 36px; line-height: 43.2px; margin: 0;" align="left">
-                                                            Thanks for your attention
+                                                            Thanks for your attention, {!! $data['seller']->name !!}
                                                         </h1>
                                                         <table class="s-4 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
                                                             <tbody>
@@ -271,6 +271,8 @@
                                                                                     SKU
                                                                                 </th>
                                                                                 <th class="fw-700 text-right border-top" style="line-height: 24px; font-size: 16px; border-top-width: 1px !important; border-top-color: #e2e8f0 !important; border-top-style: solid !important; width: auto; font-weight: 700 !important; margin: 0; padding: 8px;" align="right" width="100%">
+                                                                                    SELLER NAME
+                                                                                </th>                                                                                <th class="fw-700 text-right border-top" style="line-height: 24px; font-size: 16px; border-top-width: 1px !important; border-top-color: #e2e8f0 !important; border-top-style: solid !important; width: auto; font-weight: 700 !important; margin: 0; padding: 8px;" align="right" width="100%">
                                                                                     PRODUCT NAME
                                                                                 </th>
                                                                                 <th class="fw-700 text-right border-top" style="line-height: 24px; font-size: 16px; border-top-width: 1px !important; border-top-color: #e2e8f0 !important; border-top-style: solid !important; width: auto; font-weight: 700 !important; margin: 0; padding: 8px;" align="right" width="100%">
@@ -288,13 +290,16 @@
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                            <?php foreach ($data as $key => $item) { ?>
+                                                                            <?php foreach ($data['data'] as $key => $item) { ?>
                                                                                 <tr>
                                                                                     <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="left" width="100%">
                                                                                         {!! $key +1 !!}
                                                                                     </td>
                                                                                     <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="left" width="100%">
                                                                                         {!! $item->sku !!}
+                                                                                    </td>
+                                                                                    <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="left" width="100%">
+                                                                                        {!! $item->seller !!}
                                                                                     </td>
                                                                                     <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="left" width="100%">
                                                                                         {!! $item->title !!}
