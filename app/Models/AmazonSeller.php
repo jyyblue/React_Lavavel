@@ -30,6 +30,7 @@ class AmazonSeller extends Model
      */
     protected $fillable = [
         'name',
+        'amazon_id',
         'email',
         'sales_agent_name',
         'sales_agent_email',

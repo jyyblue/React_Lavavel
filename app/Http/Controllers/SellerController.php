@@ -108,18 +108,20 @@ class SellerController extends Controller
 
     public function getTopAmazon(Request $request)
     {
-        $data = $this->getAmazonTopDiscount();
+        $amazon_id = $request->get('sellerId');
+        $data = $this->getAmazonTopDiscount($amazon_id);
         return response()->json([
             'product' => $data
         ], 200);
     }
 
-    private function getAmazonTopDiscount()
+    private function getAmazonTopDiscount($amazon_id)
     {
         $query = "SELECT 
         ar.total_price, 
         ar.item_price, 
-        CONCAT_WS(' ', ar.seller_name,ar.seller) as seller,
+        ar.seller_name,
+        ar.seller,
         product.sku, 
         product.price, 
         product.`title`, 
@@ -143,8 +145,9 @@ class SellerController extends Controller
             ) last_updates ON last_updates.id = amazon_results.id
         ) ar 
         LEFT JOIN product ON ar.product_id = product.id 
-        WHERE ar.total_price <> 0
-      ORDER BY 
+        WHERE ar.total_price <> 0".
+        " AND ar.seller ='".$amazon_id."'".
+      " ORDER BY 
         discount DESC limit 50";
 
         $data = DB::select($query);
@@ -152,13 +155,13 @@ class SellerController extends Controller
     }
     public function sendAmazonMail(Request $request)
     {
-        $id = $request->get('id');
-        $seller = AmazonSeller::find($id);
+        $amazon_id = $request->get('id');
+        $seller = AmazonSeller::where('amazon_id', $amazon_id)->first();
         $mailHistory = new AmazonMail();
-        $mailHistory->seller_id = $id;
+        $mailHistory->seller_id = $seller->id;
         $mailHistory->status = 'sent';
         $mailHistory->save();
-        $data = $this->getAmazonTopDiscount();
+        $data = $this->getAmazonTopDiscount($amazon_id);
         $mailData = [
             'seller' => $seller,
             'data' => $data,
@@ -182,13 +185,16 @@ class SellerController extends Controller
 
     public function getTopGoogle(Request $request)
     {
-        $data = $this->getGoogleTopDiscount();
+        $seller_id = $request->get('sellerId');
+        $seller = GoogleSeller::find($seller_id);
+        $sellerName = $seller->name;
+        $data = $this->getGoogleTopDiscount($sellerName);
         return response()->json([
             'product' => $data
         ], 200);
     }
 
-    private function getGoogleTopDiscount()
+    private function getGoogleTopDiscount($sellerName)
     {
         $query = "SELECT 
         ar.total_price, 
@@ -218,6 +224,7 @@ class SellerController extends Controller
         ) ar 
         LEFT JOIN product ON ar.product_id = product.id 
         WHERE ar.total_price <> 0
+        AND ar.seller ='".$sellerName."'
       ORDER BY 
         discount DESC limit 50";
 
@@ -232,7 +239,9 @@ class SellerController extends Controller
         $mailHistory->seller_id = $id;
         $mailHistory->status = 'sent';
         $mailHistory->save();
-        $data = $this->getGoogleTopDiscount();
+        $sellerName = $seller->name;
+
+        $data = $this->getGoogleTopDiscount($sellerName);
 
         $mailData = [
             'seller' => $seller,

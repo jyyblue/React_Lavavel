@@ -17,13 +17,13 @@ const defaultColumn = {
         if(id == 'offer_link') {
             return (
                 <a 
-                className="w-full border-b border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                className="text-center w-full border-b border-stroke bg-transparent py-4 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 href={initialValue} target="_blank">Link</a>
             )
         }
         return (
             <input
-                className="w-full border-b border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                className="text-center w-full border-b border-stroke bg-transparent py-3 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 value={initialValue}
                 disabled
             />
@@ -46,7 +46,7 @@ function useSkipper() {
     return [shouldSkip, skip];
 }
 
-export default function AmazonDiscount() {
+export default function AmazonDiscount({sellerId}) {
     const columns = React.useMemo(
         () => [
             {
@@ -95,17 +95,24 @@ export default function AmazonDiscount() {
         []
     );
     const [data, setData] = useState([]);
+
+    useEffect(() => {
+        getData();
+    }, [sellerId]);
+    
     async function getData () {
-        const resp = await axios.post('/getTopAmazon', {});
+        if(sellerId == undefined) {
+            return;
+        }
+        const data = {
+            sellerId : sellerId
+        }
+        const resp = await axios.post('/getTopAmazon', data);
         if(resp.status == 200) {
             setData(resp.data.product);
         }
         console.log(resp);
     }
-    useEffect(()=> {
-        getData();
-    }, []);
-
     const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
 
     const table = useReactTable({

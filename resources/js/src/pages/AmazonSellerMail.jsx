@@ -7,20 +7,31 @@ import AmazonDiscount from "../component/AmazonDiscount";
 import AmazonMailTable from "../component/AmazonMailTable";
 
 export default function AmazonSellerMail() {
+    const [sellerId, setSellerId] = useState(null);
     const [selectSeller, setSelectSeller] = useState(null);
     const [sellerData, setSellerData] = useState([]);
     const [reloadMailTable, setReloadMailTable] = useState(1);
 
+    useEffect(() => {
+        if(selectSeller != null) {
+            setSellerId(selectSeller.value);
+        }
+    }, [selectSeller]);
     async function getData() {
         const resp = await axios.post('/getAmazonSeller', {});
         if (resp.status == 200) {
             let temp = [];
             console.log(resp.data.data)
             resp.data.data.forEach(element => {
+                let name = element.name;
+                console.log(name);
+                if(name == null) {
+                    name = element.amazon_id
+                }
                 if (element.email) {
                     const item = {
-                        'value': element.id,
-                        'label': element.name,
+                        'value': element.amazon_id,
+                        'label': name,
                     };
                     temp.push(item);
                 }
@@ -69,7 +80,7 @@ export default function AmazonSellerMail() {
             </div>
             <div className="grid grid-cols-12">
                 <div className="col-span-12">
-                    <AmazonDiscount />
+                    <AmazonDiscount sellerId = {sellerId}/>
                 </div>
                 <div className="col-span-12 mt-8">
                     <AmazonMailTable reload={reloadMailTable} />

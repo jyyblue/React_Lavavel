@@ -32,7 +32,7 @@ const defaultColumn = {
         if(id == 'email' || id == 'sales_agent_name' || id == 'sales_agent_email') {
             return (
                 <input
-                    className="w-full border-b border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-gray-100 dark:focus:border-primary"
+                    className="w-full border-b border-stroke bg-transparent py-3 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-gray-100 dark:focus:border-primary"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     onBlur={onBlur}
@@ -41,7 +41,7 @@ const defaultColumn = {
         }else {
             return (
                 <input
-                    className="w-full border-b border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    className="w-full border-b border-stroke bg-transparent py-3 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     value={value}
                     disabled
                     onChange={(e) => setValue(e.target.value)}
@@ -105,6 +105,12 @@ export default function AmazonSeller() {
 
     const columns = React.useMemo(
         () => [
+            {
+                header: "SELLER ID",
+                accessorFn: row => row.amazon_id,
+                id: 'amazon_id',
+                footer: (props) => props.column.id,
+            },
             {
                 header: "Name",
                 // accessorKey: "name",

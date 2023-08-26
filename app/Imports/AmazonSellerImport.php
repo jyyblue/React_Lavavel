@@ -15,17 +15,18 @@ class AmazonSellerImport implements ToModel
     */
     public function model(array $row)
     {
-        $name = $row[0];
-        $email = $row[1];
-        $sales_agent_name = $row[2];
-        $sales_agent_email = $row[3];
+        $amazon_id = $row[0];
+        $name = $row[1];
+        $email = $row[2];
+        $sales_agent_name = $row[3];
+        $sales_agent_email = $row[4];
         if($name == 'Name' 
         && $email == 'Email' 
         && $sales_agent_name == 'Sales Agent Name' 
         && $sales_agent_email == 'Sales Agent Email') {
             return null;
         }
-        $seller = AmazonSeller::where('name', $name)->first();
+        $seller = AmazonSeller::where('amazon_id', $amazon_id)->first();
         if($seller) {
             // if($email) {
                 $seller->update([
@@ -37,10 +38,11 @@ class AmazonSellerImport implements ToModel
             return null;
         }else{
             return new AmazonSeller([
-                'name' => $row[0],
-                'email' => $row[1],
-                'sales_agent_name' => $row[2],
-                'sales_agent_email' => $row[3],
+                'amazon_id' => $row[0],
+                'name' => $row[1],
+                'email' => $row[2],
+                'sales_agent_name' => $row[3],
+                'sales_agent_email' => $row[4],
             ]);
         }
     }

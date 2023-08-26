@@ -68,6 +68,10 @@
             margin-bottom: 3px;
         }
 
+        table tr th {
+            text-align: center;
+        }
+
         .link {
             background-color: #1acdff;
             padding: 5px 10px;
@@ -271,9 +275,6 @@
                                                                                     SKU
                                                                                 </th>
                                                                                 <th class="fw-700 text-right border-top" style="line-height: 24px; font-size: 16px; border-top-width: 1px !important; border-top-color: #e2e8f0 !important; border-top-style: solid !important; width: auto; font-weight: 700 !important; margin: 0; padding: 8px;" align="right" width="100%">
-                                                                                    SELLER NAME
-                                                                                </th>
-                                                                                <th class="fw-700 text-right border-top" style="line-height: 24px; font-size: 16px; border-top-width: 1px !important; border-top-color: #e2e8f0 !important; border-top-style: solid !important; width: auto; font-weight: 700 !important; margin: 0; padding: 8px;" align="right" width="100%">
                                                                                     PRODUCT NAME
                                                                                 </th>
                                                                                 <th class="fw-700 text-right border-top" style="line-height: 24px; font-size: 16px; border-top-width: 1px !important; border-top-color: #e2e8f0 !important; border-top-style: solid !important; width: auto; font-weight: 700 !important; margin: 0; padding: 8px;" align="right" width="100%">
@@ -300,22 +301,19 @@
                                                                                         {!! $item->sku !!}
                                                                                     </td>
                                                                                     <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="left" width="100%">
-                                                                                        {!! $item->seller !!}
-                                                                                    </td>
-                                                                                    <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="left" width="100%">
                                                                                         {!! $item->title !!}
                                                                                     </td>
-                                                                                    <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="left" width="100%">
+                                                                                    <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="center" width="100%">
                                                                                         {!! $item->price !!}
                                                                                     </td>
-                                                                                    <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="left" width="100%">
+                                                                                    <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="center" width="100%">
                                                                                         {!! $item->total_price !!}
                                                                                     </td>
-                                                                                    <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="left" width="100%">
+                                                                                    <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="center" width="100%">
                                                                                         {!! $item->discount !!}
                                                                                     </td>
 
-                                                                                    <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="left" width="100%">
+                                                                                    <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="center" width="100%">
                                                                                         <a class="link" style="" href="<?php echo $item->offer_link ?>" target="_blank">Link</a>
                                                                                     </td>
                                                                                 </tr>
@@ -349,7 +347,7 @@
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
-                                                                    <p style="line-height: 24px; font-size: 16px; width: 100%; margin: 0;" align="left">If you have any questions, contact us at <a href="https://bootstrapemail.com" style="color: #0d6efd;"><span class="__cf_email__" data-cfemail="eba3829ba884999bab8e938a869b878ec5888486">[email&#160;protected]</span></a>.</p>
+                                                                    <!-- <p style="line-height: 24px; font-size: 16px; width: 100%; margin: 0;" align="left">If you have any questions, contact us at <a href="https://bootstrapemail.com" style="color: #0d6efd;"><span class="__cf_email__" data-cfemail="eba3829ba884999bab8e938a869b878ec5888486">[email&#160;protected]</span></a>.</p> -->
                                                                 </td>
                                                             </tr>
                                                         </tbody>

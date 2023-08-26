@@ -7,10 +7,17 @@ import GoogleDiscount from "../component/GoogleDiscount";
 import GoogleMailTable from "../component/GoogleMailTable";
 
 export default function GoogleSellerMail() {
+    const [sellerId, setSellerId] = useState(null);
     const [selectSeller, setSelectSeller] = useState(null);
     const [sellerData, setSellerData] = useState([]);
     const [reloadMailTable, setReloadMailTable] = useState(1);
 
+    useEffect(() => {
+        if(selectSeller != null) {
+            setSellerId(selectSeller.value);
+        }
+    }, [selectSeller]);
+    
     async function getData() {
         const resp = await axios.post('/getGoogleSeller', {});
         if (resp.status == 200) {
@@ -69,7 +76,7 @@ export default function GoogleSellerMail() {
             </div>
             <div className="grid grid-cols-12">
                 <div className="col-span-12">
-                    <GoogleDiscount />
+                    <GoogleDiscount sellerId={sellerId}/>
                 </div>
                 <div className="col-span-12 mt-8">
                     <GoogleMailTable reload={reloadMailTable} />

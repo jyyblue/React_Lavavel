@@ -20,6 +20,7 @@ class AmazonSellerExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
+            'SELLER ID',
             'Name',
             'Email',
             'Sales Agent Name',
@@ -30,6 +31,7 @@ class AmazonSellerExport implements FromCollection, WithHeadings, WithMapping
     public function map($seller): array
     {
         return [
+            $seller->amazon_id,
             $seller->name,
             $seller->email,
             $seller->sales_agent_name,

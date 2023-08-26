@@ -28,7 +28,8 @@ class ExtractAmazonSeller extends Command
     public function handle()
     {
         //
-        $sellers = AmazonResults::select('seller')
+        $sellers = AmazonResults::
+        selectRaw('MAX(`seller_name`) as seller_name, seller')
         ->where('seller', '<>', '')
         ->whereNotNull('seller')
         ->groupBy('seller')
@@ -36,17 +37,14 @@ class ExtractAmazonSeller extends Command
     foreach ($sellers as $key => $item) {
         $sellerid = $item->seller;
         $sellername = $item->seller_name;
-        if($sellername == '') {
-            $sellername = $sellerid;
-        } else {
-            $sellername = $sellername.'-'.$sellerid.'-';
-        }
+        
         AmazonSeller::updateOrCreate(
             [
-                'name' => $sellername,
+                'amazon_id' => $sellerid,
             ],
             [
                 'name' => $sellername,
+                'amazon_id' => $sellerid,
             ]
         );
     }
