@@ -95,8 +95,8 @@ const DropdownUser = () => {
           dropdownOpen === true ? 'block' : 'hidden'
         }`}
       >
-        <ul style={{ display: 'none'}} className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
-          <li>
+        <ul  className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
+          <li style={{ display: 'none'}}>
             <Link
               to="/profile"
               className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
@@ -121,7 +121,7 @@ const DropdownUser = () => {
               My Profile
             </Link>
           </li>
-          <li>
+          <li style={{ display: 'none'}}>
             <Link
               to="#"
               className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
@@ -164,7 +164,7 @@ const DropdownUser = () => {
                   fill=""
                 />
               </svg>
-              Account Settings
+              Settings
             </Link>
           </li>
         </ul>

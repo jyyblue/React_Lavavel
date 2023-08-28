@@ -9,6 +9,8 @@ use App\Console\Commands\ScrapeAmazonIT;
 use App\Console\Commands\ScrapeGoogleIT;
 use App\Console\Commands\ExtractGoogleSeller;
 use App\Console\Commands\ExtractAmazonSeller;
+use Carbon\Carbon;
+use App\Models\Setting;
 
 class Kernel extends ConsoleKernel
 {
@@ -38,8 +40,37 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             // mark all product to be refreshed.
             Product::where('cron_flg', 1)->update(['cron_flg' => 0]);
+        })
+        ->daily()
+        ->when(function () {
+            $dayOfWeek = Carbon::now()->dayOfWeek;
+            $google = Setting::where('category', 'cron')->whereIn('name', ['google_week1', 'google_week2'])
+            ->get()->pluck('value')->toArray();
+
+            if (in_array($dayOfWeek, $google)) {
+                return true;
+            } else {
+                return false;
+            }
+        });;
+        
+        $schedule->call(function () {
+            // mark all product to be refreshed.
             Product::where('cron_flg_amazon', 1)->update(['cron_flg_amazon' => 0]);
-        })->weekly();
+        })
+        ->daily()
+        ->when(function () {
+            $dayOfWeek = Carbon::now()->dayOfWeek;
+            $amazon = Setting::where('category', 'cron')->whereIn('name', ['amazon_week1', 'amazon_week2'])
+            ->get()->pluck('value')->toArray();
+
+            if (in_array($dayOfWeek, $amazon)) {
+                return true;
+            } else {
+                return false;
+            }
+        });;
+
     }
 
     /**

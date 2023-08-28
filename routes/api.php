@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SellerController;
+use App\Http\Controllers\SettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,5 +39,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/getTopGoogle', [SellerController::class, 'getTopGoogle']);
     Route::post('/sendGoogleMail', [SellerController::class, 'sendGoogleMail']);
     Route::post('/getGoogleMail', [SellerController::class, 'getGoogleMail']);
+
+    Route::post('/setting/getSetting', [SettingController::class, 'getSetting']);
+    Route::post('/setting/updateSetting', [SettingController::class, 'updateSetting']);
 });
 

@@ -27,7 +27,7 @@ export default function Signup() {
             const resp = await axios.post('/register', body);
             if (resp.status === 200) {
                 setUser(resp.data.user);
-                return <Navigate to="/dashboard" />;
+                return <Navigate to="/gseller" />;
             }
         } catch (error) {
             if (error.response.status === 422) {
