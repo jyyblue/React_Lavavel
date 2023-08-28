@@ -210,7 +210,7 @@
                                                             </tr>
                                                         </tbody>
                                                     </table>
-                                                    <img class="w-16" src="http://caleffi.casa/assets/image/logo.jpg" style="height: auto; line-height: 100%; outline: none; text-decoration: none; display: block; width: 64px; border-style: none; border-width: 0;" width="64">
+                                                    <img class="w-16" src="http://caleffi.casa/assets/image/logo.png" style="height: auto; line-height: 100%; outline: none; text-decoration: none; display: block; width: 64px; border-style: none; border-width: 0;" width="64">
                                                     <table class="s-6 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
                                                         <tbody>
                                                             <tr>

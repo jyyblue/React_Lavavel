@@ -42,8 +42,8 @@ export default function Login() {
                         <div className="hidden w-full xl:block xl:w-1/2">
                             <div className="py-17.5 px-26 text-center">
                                 <Link className="mb-5.5 inline-block" to="/">
-                                    <img className="mx-auto h-10 w-auto hidden dark:block" src='/assets/image/logo.jpg' alt="Logo" />
-                                    <img className="mx-auto h-10 w-auto dark:hidden" src='/assets/image/logo.jpg' alt="Logo" />
+                                    <img className="mx-auto h-10 w-auto hidden dark:block" src='/assets/image/logo-white.png' alt="Logo" />
+                                    <img className="mx-auto h-10 w-auto dark:hidden" src='/assets/image/logo.png' alt="Logo" />
                                 </Link>
 
                                 <p className="2xl:px-20">

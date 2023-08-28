@@ -71,7 +71,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <NavLink to="/">
                     <img
                         className="mx-auto h-10 w-auto hidden dark:block"
-                        src="/assets/image/logo.jpg"
+                        src="/assets/image/logo-white.png"
+                        alt="Logo"
+                    />
+                    <img
+                        className="mx-auto h-10 w-auto dark:hidden"
+                        src="/assets/image/logo-white.png"
                         alt="Logo"
                     />
                 </NavLink>
@@ -178,7 +183,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                         ) && "bg-graydark dark:bg-meta-4"
                                     }`}
                                 >
-                                    
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 50 50"

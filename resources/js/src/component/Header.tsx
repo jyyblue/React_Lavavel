@@ -60,7 +60,7 @@ const Header = (props: {
           >
             <img
               className="h-10"
-              src="/assets/image/logo.jpg"
+              src="/assets/image/logo-white.png"
               alt="Logo"
             />
           </Link>

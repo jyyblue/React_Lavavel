@@ -17,7 +17,7 @@ const FHeader = () => {
                     >
                         <img
                             className="h-10"
-                            src="/assets/image/logo.jpg"
+                            src="/assets/image/logo.png"
                             alt="Logo"
                         />
                     </Link>
