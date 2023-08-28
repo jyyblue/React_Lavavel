@@ -105,7 +105,7 @@ class ScrapeAmazonIT extends Command
                 }
             }
         } else {
-            Log::info(json_encode($result));
+            
         }
     }
 
@@ -170,7 +170,6 @@ class ScrapeAmazonIT extends Command
                                     $data['listing_price'] = $LPrice;
                                     $data['ship_price'] = $SPrice;
                                     $data['seller'] = $SellerId;
-                                    Log::info('processAsin:' . $asin);
                                     $this->storeData($data);
                                 }
                             }
@@ -332,7 +331,6 @@ class ScrapeAmazonIT extends Command
             if (gettype($response) === 'string') {
                 $document = new Document($response, false);
                 $sellerName = count($document->find('#seller-name')) > 0 ? $document->find('#seller-name')[0]->text() : '';
-                Log::info('seller Name: ' . $sellerName);
                 return trim($sellerName);
             }
 

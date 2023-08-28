@@ -1,48 +1,23 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-409894bd.css",
+    "file": "assets/app-1aae1271.css",
     "isEntry": true,
     "src": "resources/css/app.css"
   },
   "resources/js/app.css": {
-    "file": "assets/app-d5af144e.css",
+    "file": "assets/app-93d8b085.css",
     "src": "resources/js/app.css"
   },
   "resources/js/app.js": {
     "assets": [
-      "assets/user-01-b007ff3f.png",
-      "assets/brand-01-10b0313f.svg",
-      "assets/brand-02-31d534b8.svg",
-      "assets/brand-03-6cc453d1.svg",
-      "assets/brand-04-1c41292a.svg",
-      "assets/brand-05-b51c44b2.svg"
+      "assets/user-01-b007ff3f.png"
     ],
     "css": [
-      "assets/app-d5af144e.css"
+      "assets/app-93d8b085.css"
     ],
-    "file": "assets/app-ecf9c5f1.js",
+    "file": "assets/app-0cad44ea.js",
     "isEntry": true,
     "src": "resources/js/app.js"
-  },
-  "resources/js/src/images/brand/brand-01.svg": {
-    "file": "assets/brand-01-10b0313f.svg",
-    "src": "resources/js/src/images/brand/brand-01.svg"
-  },
-  "resources/js/src/images/brand/brand-02.svg": {
-    "file": "assets/brand-02-31d534b8.svg",
-    "src": "resources/js/src/images/brand/brand-02.svg"
-  },
-  "resources/js/src/images/brand/brand-03.svg": {
-    "file": "assets/brand-03-6cc453d1.svg",
-    "src": "resources/js/src/images/brand/brand-03.svg"
-  },
-  "resources/js/src/images/brand/brand-04.svg": {
-    "file": "assets/brand-04-1c41292a.svg",
-    "src": "resources/js/src/images/brand/brand-04.svg"
-  },
-  "resources/js/src/images/brand/brand-05.svg": {
-    "file": "assets/brand-05-b51c44b2.svg",
-    "src": "resources/js/src/images/brand/brand-05.svg"
   },
   "resources/js/src/images/user/user-01.png": {
     "file": "assets/user-01-b007ff3f.png",

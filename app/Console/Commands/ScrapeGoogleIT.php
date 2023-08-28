@@ -164,7 +164,6 @@ class ScrapeGoogleIT extends Command
                 }
             }
 
-            Log::info('cron finished: '.$product_id);
             set_time_limit(60);
         } catch (\Exception $e) {
             Log::info('Error:' . $e->getMessage());
