@@ -31,24 +31,8 @@ class SettingController extends Controller
     public function getSetting(Request $request)
     {
         $setting = Setting::get();
-        $google = Setting::where('category', 'cron')->whereIn('name', ['google_week1', 'google_week2'])
-        ->get()->pluck('value')->toArray();
-        $tmp = array();
-
-        $amazon = Setting::where('category', 'cron')->whereIn('name', ['amazon_week1', 'amazon_week2'])
-        ->get()->pluck('value')->toArray();
-
-        $dayofweek = Carbon::now()->dayOfWeek;
-
-        $googletype = gettype($google);
-        $runAmazon = in_array($dayofweek, $amazon);
         return response()->json([
             'data' => $setting,
-            'google' => $google,
-            'amazon' => $amazon,
-            'dayofweek' => $dayofweek,
-            'runAmazon' => $runAmazon,
-            '$googletype' => $googletype
         ]);
     }
 

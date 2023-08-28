@@ -2,9 +2,6 @@ import React, { useState, useReducer, useEffect, useRef } from "react";
 import axios from "../services/axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Select from 'react-select';
-import GoogleDiscount from "../component/GoogleDiscount";
-import GoogleMailTable from "../component/GoogleMailTable";
 
 const weekDays = [
     {
@@ -128,6 +125,16 @@ export default function SettingPage() {
     const updateSetting = async (data) => {
         const ret = await axios.post('/setting/updateSetting', data);
         if (ret.status == 200) {
+            toast.success('Updated Successfully!', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });
             getData();
         } else {
 
