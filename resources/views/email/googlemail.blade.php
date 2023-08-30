@@ -222,7 +222,7 @@
                                                     </table>
                                                     <div class="space-y-4">
                                                         <h1 class="text-4xl fw-800" style="padding-top: 0; padding-bottom: 0; font-weight: 800 !important; vertical-align: baseline; font-size: 36px; line-height: 43.2px; margin: 0;" align="left">
-                                                            Report prodotti più scontati - Amazon - {!! $data['seller']->name !!}
+                                                            Report prodotti più scontati - Google - {!! $data['seller']->name !!}
                                                         </h1>
                                                         <table class="s-4 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
                                                             <tbody>
