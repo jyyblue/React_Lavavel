@@ -188,7 +188,7 @@
     <table class="bg-red-100 body" valign="top" role="presentation" border="0" cellpadding="0" cellspacing="0" style="outline: 0; width: 100%; min-width: 100%; height: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-family: Helvetica, Arial, sans-serif; line-height: 24px; font-weight: normal; font-size: 16px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; color: #000000; margin: 0; padding: 0; border-width: 0;" bgcolor="#f8d7da">
         <tbody>
             <tr>
-                <td valign="top" style="line-height: 24px; font-size: 16px; margin: 0;" align="left" bgcolor="#f8d7da">
+                <td valign="top" style="line-height: 24px; font-size: 16px; margin: 0;" align="left" bgcolor="#c9c9c9">
                     <table class="container" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
                         <tbody>
                             <tr>
