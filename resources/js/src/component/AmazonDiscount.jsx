@@ -15,11 +15,19 @@ const defaultColumn = {
         const initialValue = getValue();
 
         if(id == 'offer_link') {
-            return (
-                <a 
-                className="text-center w-full border-b border-stroke bg-transparent py-4 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                href={initialValue} target="_blank">Link</a>
-            )
+            if(initialValue == undefined) {
+                return (
+                    <a 
+                    className="opacity-0 text-center w-full border-b border-stroke bg-transparent py-4 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    >Link</a>
+                )
+            }else{
+                return (
+                    <a 
+                    className="text-center w-full border-b border-stroke bg-transparent py-4 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    href={initialValue} target="_blank">Link</a>
+                )
+            }
         }
         return (
             <input

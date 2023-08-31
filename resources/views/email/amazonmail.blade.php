@@ -68,12 +68,15 @@
             margin-bottom: 3px;
             text-align: center;
         }
-        table tr th{
+
+        table tr th {
             text-align: center;
         }
+
         .text-center {
             text-align: center;
         }
+
         .link {
             background-color: #1acdff;
             padding: 5px 10px;
@@ -224,7 +227,7 @@
                                                     </table>
                                                     <div class="space-y-4">
                                                         <h1 class="text-4xl fw-800" style="padding-top: 0; padding-bottom: 0; font-weight: 800 !important; vertical-align: baseline; font-size: 36px; line-height: 43.2px; margin: 0;" align="left">
-                                                        Report prodotti più scontati - Amazon - {!! $data['seller']->name !!}
+                                                            Report prodotti più scontati - Amazon - {!! $data['seller']->name !!}
                                                         </h1>
                                                         <table class="s-4 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
                                                             <tbody>
@@ -236,9 +239,9 @@
                                                             </tbody>
                                                         </table>
                                                         <p class="" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0;" align="left">
-                                                        Ciao {!! $data['seller']->name !!} di seguito puoi vedere i tuoi prodotti più scontati
-                                                        Ti ricordiamo che su questi prodotti lo sconto massimo raccomandato è del 20%
-                                                        Per qualsiasi dubbio ti preghiamo di contattare il tuo agente di riferimento
+                                                            Ciao {!! $data['seller']->name !!} di seguito puoi vedere i tuoi prodotti più scontati
+                                                            Ti ricordiamo che su questi prodotti lo sconto massimo raccomandato è del 20%
+                                                            Per qualsiasi dubbio ti preghiamo di contattare il tuo agente di riferimento
                                                         </p>
                                                         <table class="s-4 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
                                                             <tbody>
@@ -272,7 +275,8 @@
                                                                                 <th class="fw-700 text-right border-top" style="line-height: 24px; font-size: 16px; border-top-width: 1px !important; border-top-color: #e2e8f0 !important; border-top-style: solid !important; width: auto; font-weight: 700 !important; margin: 0; padding: 8px;" align="right" width="100%">
                                                                                     SKU
                                                                                 </th>
-                                                                                </th>                                                                                <th class="fw-700 text-right border-top" style="line-height: 24px; font-size: 16px; border-top-width: 1px !important; border-top-color: #e2e8f0 !important; border-top-style: solid !important; width: auto; font-weight: 700 !important; margin: 0; padding: 8px;" align="right" width="100%">
+                                                                                </th>
+                                                                                <th class="fw-700 text-right border-top" style="line-height: 24px; font-size: 16px; border-top-width: 1px !important; border-top-color: #e2e8f0 !important; border-top-style: solid !important; width: auto; font-weight: 700 !important; margin: 0; padding: 8px;" align="right" width="100%">
                                                                                     PRODUCT NAME
                                                                                 </th>
                                                                                 <th class="fw-700 text-right border-top" style="line-height: 24px; font-size: 16px; border-top-width: 1px !important; border-top-color: #e2e8f0 !important; border-top-style: solid !important; width: auto; font-weight: 700 !important; margin: 0; padding: 8px;" align="right" width="100%">
@@ -312,7 +316,9 @@
                                                                                     </td>
 
                                                                                     <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="center" width="100%">
-                                                                                        <a class="link" style="" href="<?php echo $item->offer_link ?>" target="_blank">Link</a>
+                                                                                        <?php if ($item->offer_link) { ?>
+                                                                                            <a class="link" style="" href="<?php echo $item->offer_link ?>" target="_blank">Link</a>
+                                                                                        <?php } ?>
                                                                                     </td>
                                                                                 </tr>
                                                                             <?php } ?>

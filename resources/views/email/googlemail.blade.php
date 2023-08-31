@@ -310,7 +310,9 @@
                                                                                     </td>
 
                                                                                     <td style="line-height: 24px; font-size: 16px; width: auto; margin: 0; padding: 8px;" align="center" width="100%">
-                                                                                        <a class="link" style="" href="<?php echo $item->offer_link ?>" target="_blank">Link</a>
+                                                                                        <?php if($item->offer_link) {?>
+                                                                                            <a class="link" style="" href="<?php echo $item->offer_link ?>" target="_blank">Link</a>
+                                                                                        <?php }?>
                                                                                     </td>
                                                                                 </tr>
                                                                             <?php } ?>
