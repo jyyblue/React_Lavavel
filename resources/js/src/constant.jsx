@@ -1,4 +1,5 @@
-export const api_url = 'http://caleffi.casa/api';
-export const server_url = 'http://caleffi.casa/';
-// export const api_url = 'http://127.0.0.1:8000/api';
-// export const server_url = 'http://127.0.0.1:8000/';
+const { VITE_APP_ENV, VITE_APP_URL_LOCAL, VITE_APP_URL_PRODUCT } = import.meta.env;
+console.log(import.meta.env.VITE_APP_ENV)
+
+export const server_url = VITE_APP_ENV === 'local'? VITE_APP_URL_LOCAL: VITE_APP_URL_PRODUCT;
+export const api_url = server_url + 'api';
