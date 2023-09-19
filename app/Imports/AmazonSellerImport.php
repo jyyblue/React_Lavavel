@@ -20,6 +20,7 @@ class AmazonSellerImport implements ToModel
         $email = $row[2];
         $sales_agent_name = $row[3];
         $sales_agent_email = $row[4];
+        $piva = $row[5];
         if($name == 'Name' 
         && $email == 'Email' 
         && $sales_agent_name == 'Sales Agent Name' 
@@ -33,6 +34,7 @@ class AmazonSellerImport implements ToModel
                     'email' => $email,
                     'sales_agent_name' => $sales_agent_name,
                     'sales_agent_email' => $sales_agent_email,
+                    'piva' => $piva,
                 ]);
             // }
             return null;
@@ -43,6 +45,7 @@ class AmazonSellerImport implements ToModel
                 'email' => $row[2],
                 'sales_agent_name' => $row[3],
                 'sales_agent_email' => $row[4],
+                'piva' => $row[5],
             ]);
         }
     }

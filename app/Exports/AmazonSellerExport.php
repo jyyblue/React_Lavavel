@@ -25,6 +25,7 @@ class AmazonSellerExport implements FromCollection, WithHeadings, WithMapping
             'Email',
             'Sales Agent Name',
             'Sales Agent Email',
+            'PIVA',
         ];
     }
 
@@ -36,6 +37,7 @@ class AmazonSellerExport implements FromCollection, WithHeadings, WithMapping
             $seller->email,
             $seller->sales_agent_name,
             $seller->sales_agent_email,
+            $seller->piva,
         ];
     }
 }

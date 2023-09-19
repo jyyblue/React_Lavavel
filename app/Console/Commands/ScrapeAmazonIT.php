@@ -2,13 +2,17 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\ScrapeAmazonITJob;
+use App\Jobs\TestJob;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use DateTime;
-use Revolution\Google\Sheets\Facades\Sheets;
 use App\Models\Product;
 use App\Models\AmazonResults;
 use DiDom\Document;
+
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
+use Throwable;
 
 class ScrapeAmazonIT extends Command
 {
@@ -31,19 +35,53 @@ class ScrapeAmazonIT extends Command
      */
     public function handle()
     {
+        dispatch(new TestJob());
         try {
-            $request = $this->markProcessedProduct();
-            $count = $request['count'];
-            if($count > 0) {
-                $access_token = $this->getAccessToken();
-                $this->findOfferWithAsin($access_token, $request['asin']);
+            $success = 0;
+            $fail = 0;
+            $failError = array();
+            $batchJob = array();
+    
+            $product_list = Product::where('cron_flg_amazon', 0)->get();
+    
+            foreach ($product_list as $key => $item) {
+                try{
+                    $data = [
+                        'data_id' => $item->id,
+                    ];
+                    $job = new ScrapeAmazonITJob($data);
+                    array_push($batchJob, $job);
+                    $success ++;
+                }catch(\Exception $e) {
+                    $fail++;
+                    array_push($failError, $e->getMessage());
+                }
             }
+            Product::where('cron_flg_amazon', 0)->update(['cron_flg_amazon' => 1]);
 
-            do {
-                $access_token = $this->getAccessToken();
-                $this->findOfferWithAsin($access_token, $request['asin']);
-                $request = $this->markProcessedProduct();
-            } while (strlen($request['asin']) > 0);
+            $batch = Bus::batch($batchJob)->then(function (Batch $batch) {
+                // All jobs completed successfully...
+            })->catch(function (Batch $batch, Throwable $e) {
+                // First batch job failure detected...
+            })->finally(function (Batch $batch){
+                // The batch has finished executing...
+                $processedJobs = $batch->processedJobs();
+                $failedJobs = $batch->failedJobs;
+            })->allowFailures()->dispatch();
+    
+            // $request = $this->markProcessedProduct();
+            // $count = $request['count'];
+            // if($count > 0) {
+            //     $access_token = $this->getAccessToken();
+            //     $this->findOfferWithAsin($access_token, $request['asin']);
+            // }
+
+            // do {
+            //     $access_token = $this->getAccessToken();
+            //     $this->findOfferWithAsin($access_token, $request['asin']);
+            //     $request = $this->markProcessedProduct();
+            // } while (strlen($request['asin']) > 0);
+
         } catch (\Exception $e) {
             Log::info('Error: handle' . $e->getMessage());
         }
@@ -197,9 +235,6 @@ class ScrapeAmazonIT extends Command
         $sellerName = $this->getSellerName($seller);
         $product = Product::where('asin', $asin)->first();
         $product_id = $product->id;
-        $title = $product->title;
-        // 'item_price', https://amazon.it/dp/B0719BRDS5
-        // 'offer_link', https://amazon.it/s?me=AGMD7MBURS5HM&marketplaceID=APJ6JRA9NG5V4
 
         // store in database.
         AmazonResults::create([
@@ -209,26 +244,8 @@ class ScrapeAmazonIT extends Command
             'seller_name' => $sellerName,
             'item_price' => $listing_price,
             'offer_link' => 'https://amazon.it/dp/' . $asin,
-            // 'offer_link' => 'https://amazon.it/s?me=' . $seller . '&marketplaceID=' . env('AMAZON_MARKETPLACE_ID'),
         ]);
-        sleep(1);
-        // store in google sheet
-        if ($total_price > 0) {
-            $append = [
-                $product_id ? (int)$product_id : 0,
-                $title ? $title : '',
-                $total_price ? (float)$total_price : 0,
-                $seller ? $seller  : '',
-                $listing_price ? $listing_price  : 0,
-                'https://amazon.it/dp/' . $asin,
-                // 'https://amazon.it/s?me=' . $seller . '&marketplaceID=' . env('AMAZON_MARKETPLACE_ID'),
-                now()->toDateTimeString(),
-                $sellerName,
-            ];
-            Sheets::spreadsheet(config('sheets.amazon_spreadsheet_id'))
-                ->sheet(config('sheets.amazon_sheet_id'))
-                ->append([$append]);
-        }
+        return;
     }
 
     private function markProcessedProduct()
