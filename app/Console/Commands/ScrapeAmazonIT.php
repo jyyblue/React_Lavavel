@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Jobs\ScrapeAmazonITJob;
-use App\Jobs\TestJob;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product;
@@ -35,7 +34,6 @@ class ScrapeAmazonIT extends Command
      */
     public function handle()
     {
-        dispatch(new TestJob());
         try {
             $success = 0;
             $fail = 0;
