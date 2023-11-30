@@ -180,8 +180,13 @@ class ScrapeAmazonITJob implements ShouldQueue
                             $payload = $body->payload;
                             $asin = isset($payload->ASIN) ? $payload->ASIN : '';
                             if (isset($payload->Offers)) {
-                                $szSuccess++;
+                                
                                 $offers = $payload->Offers;
+                                if(count($offers) > 0) {
+                                    $szSuccess++;
+                                }else{
+                                    $szFail++;    
+                                }
                                 foreach ($offers as $key2 => $offer) {
                                     $listingPrice = isset($offer->ListingPrice) ? $offer->ListingPrice : array();
                                     $LPrice = isset($listingPrice->Amount) ? $listingPrice->Amount : 0;
