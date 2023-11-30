@@ -34,6 +34,7 @@ class AmazonSeller extends Model
         'email',
         'sales_agent_name',
         'sales_agent_email',
-        'piva'
+        'piva',
+        'attempt',
     ];
 }

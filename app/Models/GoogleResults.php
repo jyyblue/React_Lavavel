@@ -35,5 +35,6 @@ class GoogleResults extends Model
         'seller',
         'item_price',
         'offer_link',
+        'call_group_id',
     ];
 }

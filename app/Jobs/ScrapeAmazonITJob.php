@@ -13,6 +13,7 @@ use Illuminate\Bus\Batchable;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product;
 use App\Models\AmazonResults;
+use App\Models\AmazonSeller;
 use Carbon\Carbon;
 use DiDom\Document;
 
@@ -20,6 +21,7 @@ class ScrapeAmazonITJob implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     private $data_id = array();
+    private $call_group_id = 1;
 
     /**
      * Create a new job instance.
@@ -28,6 +30,7 @@ class ScrapeAmazonITJob implements ShouldQueue
     {
         //
         $this->data_id = $data['data_id'];
+        $this->call_group_id = $data['call_group_id'];
     }
 
     /**
@@ -41,7 +44,6 @@ class ScrapeAmazonITJob implements ShouldQueue
         }
         //
         try {
- 
             $access_token = $this->getAccessToken();
             $data_asin = array();
             $products = Product::whereIn('id', $this->data_id)->get();
@@ -122,7 +124,7 @@ class ScrapeAmazonITJob implements ShouldQueue
         try {
 
             $history = new AmazonAPICallHistory();
-            $history->call_group_id = 0;
+            $history->call_group_id = $this->call_group_id;
             $history->call_sub_group_id = $this->data_id[0];
             $history->sz_empty_asin = $szEmptyAsin;
             $history->call_time = Carbon::now();
@@ -178,6 +180,7 @@ class ScrapeAmazonITJob implements ShouldQueue
                             $payload = $body->payload;
                             $asin = isset($payload->ASIN) ? $payload->ASIN : '';
                             if (isset($payload->Offers)) {
+                                $szSuccess++;
                                 $offers = $payload->Offers;
                                 foreach ($offers as $key2 => $offer) {
                                     $listingPrice = isset($offer->ListingPrice) ? $offer->ListingPrice : array();
@@ -191,7 +194,6 @@ class ScrapeAmazonITJob implements ShouldQueue
                                     $data['ship_price'] = $SPrice;
                                     $data['seller'] = $SellerId;
                                     $this->storeData($data);
-                                    $szSuccess++;
                                 }
                             } else {
                                 $szFail++;
@@ -243,6 +245,7 @@ class ScrapeAmazonITJob implements ShouldQueue
             'seller_name' => $sellerName,
             'item_price' => $listing_price,
             'offer_link' => 'https://amazon.it/dp/' . $asin,
+            'call_group_id' => $this->call_group_id,
         ]);
         return;
     }
@@ -250,9 +253,23 @@ class ScrapeAmazonITJob implements ShouldQueue
     private function getSellerName($sellerID)
     {
         try {
-            $sellerUrl = 'https://amazon.it/sp?seller=' . $sellerID;
+            // get from AmazonSeller table
+            $seller = AmazonSeller::where('amazon_id', $sellerID)->first();
+            $max_attempt = 3;
+            if(!empty($seller)) {
+                if($seller->attempt >= $max_attempt) {
+                    return $seller->name;
+                }
+
+                if(!empty($seller->name)) {
+                    return $seller->name;
+                }
+            }
+
+            $sellerName = '';
+            $sellerUrl = 'https://amazon.it/sp?seller='.$sellerID;
             $url =
-                "http://api.scraperapi.com?api_key=" . env('SCRAPER_API_KEY') . "&url=" . $sellerUrl;
+                "http://api.scraperapi.com?api_key=".env('SCRAPER_API_KEY')."&url=".$sellerUrl;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -261,15 +278,30 @@ class ScrapeAmazonITJob implements ShouldQueue
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
             $response = curl_exec($ch);
             curl_close($ch);
+
             if (gettype($response) === 'string') {
                 $document = new Document($response, false);
                 $sellerName = count($document->find('#seller-name')) > 0 ? $document->find('#seller-name')[0]->text() : '';
-                return trim($sellerName);
+                $sellerName = trim($sellerName);
             }
 
-            return '';
+            if(empty($seller)) {
+                // create new seller record
+                $seller = new AmazonSeller();
+                $seller->name = $sellerName;
+                $seller->amazon_id = $sellerID;
+                $seller->save();
+            }else{
+                // update seller record
+                $attempt = $seller->attempt + 1;
+                $seller->update([
+                    'name' => $sellerName,
+                    'attempt' => $attempt,
+                ]);
+            }
+            return $sellerName;
         } catch (\Exception $e) {
-            Log::info('Error getSellerName:' . $e->getMessage());
+            Log::info('Error getSellerName: ' . $e->getMessage());
             return '';
         }
     }

@@ -21,7 +21,7 @@ class ScrapeGoogleITJob implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     private $data_id;
-
+    private $call_group_id;
     /**
      * Create a new job instance.
      */
@@ -29,6 +29,7 @@ class ScrapeGoogleITJob implements ShouldQueue
     {
         //
         $this->data_id = $data['data_id'];
+        $this->call_group_id = $data['call_group_id'];
     }
 
     /**
@@ -166,6 +167,7 @@ class ScrapeGoogleITJob implements ShouldQueue
                 'seller' => $seller,
                 'item_price' => $item_price,
                 'offer_link' => $offer_link,
+                'call_group_id' => $this->call_group_id,
             ]);
         }
         return;

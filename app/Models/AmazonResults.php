@@ -36,5 +36,6 @@ class AmazonResults extends Model
         'item_price',
         'offer_link',
         'seller_name',
+        'call_group_id',
     ];
 }

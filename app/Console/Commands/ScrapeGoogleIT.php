@@ -48,11 +48,17 @@ class ScrapeGoogleIT extends Command
             if(count($product_list) > 0) {
                 return ;
             }
-
+            $call_result = GoogleResults::orderBy('call_group_id', 'DESC')->first();
+            $call_group_id = 0;
+            if(!empty($call_result)) {
+                $call_group_id = $call_result->call_group_id;
+            }
+            $call_group_id ++;
             foreach ($product_list as $key => $item) {
                 try{
                     $data = [
                         'data_id' => $item->id,
+                        'call_group_id' => $call_group_id,
                     ];
                     $job = new ScrapeGoogleITJob($data);
                     array_push($batchJob, $job);

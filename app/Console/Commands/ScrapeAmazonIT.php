@@ -39,12 +39,18 @@ class ScrapeAmazonIT extends Command
             $fail = 0;
             $failError = array();
             $batchJob = array();
-            // Product::where('cron_flg_amazon', 1)->update(['cron_flg_amazon' => 0]);
             $product_list = Product::where('cron_flg_amazon', 0)->get();
             $count = count($product_list);
             if($count == 0) {
                 return;
             }
+            $call_result = AmazonResults::orderBy('call_group_id', 'DESC')->first();
+            $call_group_id = 0;
+            if(!empty($call_result)) {
+                $call_group_id = $call_result->call_group_id;
+            }
+            $call_group_id ++;
+
             $size = 20;
             $szHeap = ceil($count / $size);
             for($i=0; $i < $szHeap; $i++) {
@@ -59,6 +65,7 @@ class ScrapeAmazonIT extends Command
                     if(count($ids) > 0){
                         $data = [
                             'data_id' => $ids,
+                            'call_group_id' => $call_group_id
                         ];
                         $job = new ScrapeAmazonITJob($data);
                         array_push($batchJob, $job);
