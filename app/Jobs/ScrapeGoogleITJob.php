@@ -157,15 +157,17 @@ class ScrapeGoogleITJob implements ShouldQueue
         $item_price = $data['item_price'] ? $data['item_price'] : 0;
         $offer_link = $data['offer_link'] ? $data['offer_link'] : '';
 
-        // store in database.
-        GoogleResults::create([
-            'product_id' => $product_id,
-            'title' => $title,
-            'total_price' => $total_price,
-            'seller' => $seller,
-            'item_price' => $item_price,
-            'offer_link' => $offer_link,
-        ]);
+        if($total_price > 0 && $product_id > 0 && $item_price > 0) {
+            // store in database.
+            GoogleResults::create([
+                'product_id' => $product_id,
+                'title' => $title,
+                'total_price' => $total_price,
+                'seller' => $seller,
+                'item_price' => $item_price,
+                'offer_link' => $offer_link,
+            ]);
+        }
         return;
     }
 }

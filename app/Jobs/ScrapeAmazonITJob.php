@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\AmazonAPICallHistory;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,12 +13,13 @@ use Illuminate\Bus\Batchable;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product;
 use App\Models\AmazonResults;
+use Carbon\Carbon;
 use DiDom\Document;
 
 class ScrapeAmazonITJob implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    private $data_id;
+    private $data_id = array();
 
     /**
      * Create a new job instance.
@@ -39,20 +41,44 @@ class ScrapeAmazonITJob implements ShouldQueue
         }
         //
         try {
+ 
             $access_token = $this->getAccessToken();
             $data_asin = array();
-            $product = Product::find($this->data_id);
-            $item_asin = array(
-                'uri' => '/products/pricing/v0/items/' . $product->asin . '/offers',
-                'method' => 'GET',
-                'ItemCondition' => 'New',
-                'MarketplaceId' => env('AMAZON_MARKETPLACE_ID'),
-                'CustomerType' => 'Consumer'
-            );
-            array_push($data_asin, $item_asin);
+            $products = Product::whereIn('id', $this->data_id)->get();
+
+            $szEmptyAsin = 0;
+            foreach ($products as $key => $product) {
+                if(!empty($product->asin)){
+                    $item_asin = array(
+                        'uri' => '/products/pricing/v0/items/' . $product->asin . '/offers',
+                        'method' => 'GET',
+                        'ItemCondition' => 'New',
+                        'MarketplaceId' => env('AMAZON_MARKETPLACE_ID'),
+                        'CustomerType' => 'Consumer'
+                    );
+                    array_push($data_asin, $item_asin);
+                } else {
+                    $szEmptyAsin++;
+                }
+            }
+
+            // get last call time
+            $last = AmazonAPICallHistory::orderBy('created_at', 'DESC')->first();
+            if(!empty($last)) {
+                $callTime = Carbon::parse($last->call_time);
+                $now = Carbon::now();
+                $diff = $now->diffInMicroseconds($callTime);
+
+                // compare 10 second and wait
+                $remain = 11000000 - $diff;
+                if( $remain > 0 ) {
+                    usleep($remain);
+                }
+            }
+
             $request_asin = array('requests' => $data_asin);
             $request_asin_str = json_encode($request_asin);
-            $this->findOfferWithAsin($access_token, $request_asin_str);
+            $this->findOfferWithAsin($access_token, $request_asin_str, $szEmptyAsin);
 
         } catch (\Exception $e) {
             Log::info('Error: handle' . $e->getMessage());
@@ -91,9 +117,17 @@ class ScrapeAmazonITJob implements ShouldQueue
             Log::info('Error: getAccessToken' . $e->getMessage());
         }
     }
-    private function findOfferWithAsin($access_token, $request)
+    private function findOfferWithAsin($access_token, $request, $szEmptyAsin)
     {
         try {
+
+            $history = new AmazonAPICallHistory();
+            $history->call_group_id = 0;
+            $history->call_sub_group_id = $this->data_id[0];
+            $history->sz_empty_asin = $szEmptyAsin;
+            $history->call_time = Carbon::now();
+            $history->save();
+
             $curl = curl_init();
             curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://sellingpartnerapi-eu.amazon.com/batches/products/pricing/v0/itemOffers',
@@ -115,19 +149,24 @@ class ScrapeAmazonITJob implements ShouldQueue
 
             curl_close($curl);
             $result = json_decode($response);
-            $this->processAsin($result);
+            $this->processAsin($result, $history);
             return true;
         } catch (\Exception $e) {
             Log::info('Error: findOfferWithAsin' . $e->getMessage());
-
+            $history->update([
+                'sz_fail' => count($this->data_id),
+            ]);
             return false;
         }
     }
-    private function processAsin($result)
+    private function processAsin($result, $history)
     {
         try {
             if (isset($result->responses)) {
                 $responses = $result->responses;
+
+                $szSuccess = 0;
+                $szFail = 0;
                 for ($key = 0; $key < count($responses); $key++) {
                     $resp = $responses[$key];
                     $status = isset($resp->status) ? $resp->status : array();
@@ -152,18 +191,36 @@ class ScrapeAmazonITJob implements ShouldQueue
                                     $data['ship_price'] = $SPrice;
                                     $data['seller'] = $SellerId;
                                     $this->storeData($data);
+                                    $szSuccess++;
                                 }
+                            } else {
+                                $szFail++;
                             }
+                        } else {
+                            $szFail++;
                         }
+                    } else {
+                        $szFail++;
                     }
                 }
+
+                $history->update([
+                    'sz_success' => $szSuccess,
+                    'sz_fail' => $szFail,
+                ]);
+
             } else {
                 Log::info('process Asin: json_encode($result)');
+                $history->update([
+                    'sz_fail' => count($this->data_id),
+                ]);
             }
             return true;
         } catch (\Exception $e) {
             Log::info('Error: processAsin' . $e->getMessage());
-
+            $history->update([
+                'sz_fail' => count($this->data_id),
+            ]);
             return false;
         }
     }
