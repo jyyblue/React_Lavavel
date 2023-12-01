@@ -41,7 +41,6 @@ class SellerController extends Controller
     {
         $id = $request->id;
         $data = $request->all();
-        Log::info(json_encode($data));
         $seller = GoogleSeller::where('id', $id)->first();
         if (!$seller) {
             return response()->json([
@@ -82,7 +81,6 @@ class SellerController extends Controller
     {
         $id = $request->id;
         $data = $request->all();
-        Log::info(json_encode($data));
         $seller = AmazonSeller::where('id', $id)->first();
         if (!$seller) {
             return response()->json([
