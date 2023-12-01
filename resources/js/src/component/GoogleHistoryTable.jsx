@@ -1,5 +1,7 @@
 import React, { useState, useReducer, useEffect, useRef } from "react";
 import axios from "../services/axios";
+import moment from "moment/moment";
+
 import {
     useReactTable,
     getCoreRowModel,
@@ -7,31 +9,18 @@ import {
     getPaginationRowModel,
     flexRender,
 } from "@tanstack/react-table";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 // Give our default column cell renderer editing superpowers!
 const defaultColumn = {
     cell: ({ getValue, row: { index }, column: { id }, table }) => {
-        const initialValue = getValue();
+        let initialValue = getValue();
+        if(id == 'call_time') {
 
-        if(id == 'offer_link') {
-            if(initialValue == undefined) {
-                return (
-                    <a 
-                    className="opacity-0 text-center w-full border-b border-stroke bg-transparent py-4 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                    >Link</a>
-                )
-            }else{
-                return (
-                    <a 
-                    className="text-center w-full border-b border-stroke bg-transparent py-4 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                    href={initialValue} target="_blank">Link</a>
-                )
-            }
+            initialValue = moment(initialValue).format('YYYY-MM-DD HH:mm');
         }
         return (
             <input
-                className="text-center w-full border-b border-stroke bg-transparent py-3 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                className="w-full border-b border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 value={initialValue}
                 disabled
             />
@@ -54,74 +43,50 @@ function useSkipper() {
     return [shouldSkip, skip];
 }
 
-export default function AmazonDiscount({sellerId, discount}) {
+export default function GoogleHistoryTable({reload}) {
     const columns = React.useMemo(
         () => [
             {
-                header: "SKU",
-                accessorFn: row => row.sku,
-                id: 'sku',
+                header: "Last Time",
+                accessorFn: row => row.call_time,
+                id: 'call_time',
                 footer: (props) => props.column.id,
             },
             {
-                header: "SELLER NAME",
-                accessorFn: row => row.seller,
-                id: 'seller',
+                header: "Success",
+                accessorFn: row => row.sz_success,
+                id: 'sz_success',
                 footer: (props) => props.column.id,
             },
             {
-                header: "PRODUCT NAME",
-                accessorFn: row => row.title,
-                id: 'title',
+                header: "Fail",
+                // accessorKey: "name",
+                accessorFn: row => row.sz_fail,
+                id: 'sz_fail',
                 footer: (props) => props.column.id,
             },
             {
-                header: "MSRP Price ",
-                accessorFn: row => row.price,
-                id: 'price',
+                header: "Zero",
+                // accessorKey: "name",
+                accessorFn: row => row.sz_zero,
+                id: 'sz_zero',
                 footer: (props) => props.column.id,
-            },
-            {
-                header: "Sales Price",
-                accessorFn: row => row.total_price,
-                id: 'total_price',
-                footer: (props) => props.column.id,
-            },
-            {
-                header: "DISCOUNT %",
-                accessorFn: row => row.discount,
-                id: 'discount',
-                footer: (props) => props.column.id,
-            },
-            {
-                header: "LINK",
-                accessorFn: row => row.offer_link,
-                id: 'offer_link',
-                footer: (props) => props.column.id,
-            },
+            },            
         ],
         []
     );
     const [data, setData] = useState([]);
 
+    async function getData() {
+        const resp = await axios.post('/history/getGoogleScrapeHistory', {});
+        if (resp.status == 200) {
+            setData(resp.data.data);
+        }
+    }
     useEffect(() => {
         getData();
-    }, [sellerId, discount]);
-    
-    async function getData () {
-        if(sellerId == undefined) {
-            return;
-        }
-        const data = {
-            sellerId : sellerId,
-            discount,
-        }
-        const resp = await axios.post('/getTopAmazon', data);
-        if(resp.status == 200) {
-            setData(resp.data.product);
-        }
-        console.log(resp);
-    }
+    }, [reload]);
+
     const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
 
     const table = useReactTable({
@@ -134,10 +99,10 @@ export default function AmazonDiscount({sellerId, discount}) {
         autoResetPageIndex,
         debugTable: true,
     });
+    
     return (
         <div className="p-2">
             <div className="h-2" />
-            <div className="mb-3 text-lg font-bold"><h1>Top Discount</h1></div>
             <table className="w-full">
                 <thead>
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -155,7 +120,16 @@ export default function AmazonDiscount({sellerId, discount}) {
                                                         .header,
                                                     header.getContext()
                                                 )}
-    
+                                                {header.column.getCanFilter() ? (
+                                                    <div>
+                                                        <Filter
+                                                            column={
+                                                                header.column
+                                                            }
+                                                            table={table}
+                                                        />
+                                                    </div>
+                                                ) : null}
                                             </div>
                                         )}
                                     </th>
@@ -252,7 +226,6 @@ export default function AmazonDiscount({sellerId, discount}) {
                     ))}
                 </select>
             </div>
-            <ToastContainer />
         </div>
     );
 }

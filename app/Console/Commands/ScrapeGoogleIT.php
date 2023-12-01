@@ -2,19 +2,17 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\GoogleMailJob;
 use App\Jobs\ScrapeGoogleITJob;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product;
 use App\Models\GoogleResults;
-use DateTime;
-use DiDom\Document;
-use DiDom\Query;
-
+use App\Models\GoogleSeller;
+use App\Models\Setting;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 use Throwable;
-
 
 class ScrapeGoogleIT extends Command
 {
@@ -81,9 +79,61 @@ class ScrapeGoogleIT extends Command
                 $failedJobs = $batch->failedJobs;
             })->allowFailures()->dispatch();
 
+            $this->MailQueue();
         } catch (\Exception $e) {
             Log::info('Error:' . $e->getMessage());
             set_time_limit(60);
+        }
+    }
+
+    private function MailQueue() {
+        $mainMail = Setting::where('category', 'mail')->where('name', 'google_main')->first();
+        $agentMail = Setting::where('category', 'mail')->where('name', 'google_agent')->first();
+        $discount = Setting::where('category', 'discount')->where('name', 'google')->first();
+        $batchJob1 = array();
+        $batchJob2 = array();
+        if($mainMail->value == '1') {
+            $sellers = GoogleSeller::whereNotNull('email')->get();
+
+            foreach ($sellers as $key => $seller) {
+                $data = [
+                    'seller' => $seller,
+                    'discount' => $discount->value,
+                    'email' => $seller->email,
+                ];
+                $job = new GoogleMailJob($data);
+                array_push($batchJob1, $job);
+            }
+
+            $batch1 = Bus::batch($batchJob1)->then(function (Batch $batch) {
+                // All jobs completed successfully...
+            })->catch(function (Batch $batch, Throwable $e) {
+                // First batch job failure detected...
+            })->finally(function (Batch $batch){
+                // The batch has finished executing...
+            })->allowFailures()->dispatch();
+        }
+
+        if($agentMail->value == '1')  {
+            $sellers = GoogleSeller::whereNotNull('sales_agent_email')->get();
+
+            foreach ($sellers as $key => $seller) {
+                $data = [
+                    'seller' => $seller,
+                    'discount' => $discount,
+                    'email' => $seller->sales_agent_email,
+                ];
+                $job = new GoogleMailJob($data);
+                array_push($batchJob2, $job);
+            }
+
+            $batch1 = Bus::batch($batchJob2)->then(function (Batch $batch) {
+                // All jobs completed successfully...
+            })->catch(function (Batch $batch, Throwable $e) {
+                // First batch job failure detected...
+            })->finally(function (Batch $batch){
+                // The batch has finished executing...
+            })->allowFailures()->dispatch();
         }
     }
 }

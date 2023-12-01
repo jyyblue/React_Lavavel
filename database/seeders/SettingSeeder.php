@@ -36,6 +36,36 @@ class SettingSeeder extends Seeder
                 'name' => 'google_week2',
                 'value' => '-1',
             ],
+            [
+                'category' => 'mail',
+                'name' => 'amazon_main',
+                'value' => '0',
+            ],
+            [
+                'category' => 'mail',
+                'name' => 'amazon_agent',
+                'value' => '0',
+            ],
+            [
+                'category' => 'mail',
+                'name' => 'google_main',
+                'value' => '0',
+            ],
+            [
+                'category' => 'mail',
+                'name' => 'google_agent',
+                'value' => '0',
+            ],
+            [
+                'category' => 'discount',
+                'name' => 'amazon',
+                'value' => '0',
+            ],
+            [
+                'category' => 'discount',
+                'name' => 'google',
+                'value' => '0',
+            ],
         ];
 
         for($i =0 ; $i < count($items); $i++) {

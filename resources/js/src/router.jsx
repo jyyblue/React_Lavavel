@@ -12,6 +12,8 @@ import AmazonSeller from "./pages/AmazonSeller";
 import AmazonSellerMail from "./pages/AmazonSellerMail";
 import GoogleSellerMail from "./pages/GoogleSellerMail";
 import SettingPage from "./pages/SettingPage";
+import AmazonScrapeHistory from "./pages/AmazonScrapeHistory";
+import GoogleScrapeHistory from "./pages/GoogleScrapeHistory";
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -54,6 +56,14 @@ const router = createBrowserRouter([
 			{
 				path: '/settings',
 				element: <SettingPage />,
+			},
+			{
+				path: '/history-amazon',
+				element: <AmazonScrapeHistory />,
+			},
+			{
+				path: '/history-google',
+				element: <GoogleScrapeHistory />,
 			},
 		],
 	},

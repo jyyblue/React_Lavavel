@@ -6,17 +6,31 @@ import Select from 'react-select';
 import AmazonDiscount from "../component/AmazonDiscount";
 import AmazonMailTable from "../component/AmazonMailTable";
 
+const options = [
+    {
+        'label': 'All',
+        'value': 0,
+    },
+    {
+        'label': '>= 20%',
+        'value': 1,
+    },
+];
 export default function AmazonSellerMail() {
     const [sellerId, setSellerId] = useState(null);
     const [selectSeller, setSelectSeller] = useState(null);
     const [sellerData, setSellerData] = useState([]);
     const [reloadMailTable, setReloadMailTable] = useState(1);
 
+    const all = options.find(item => item.value == 0);
+    const [discount, setDiscount] = useState(all);
+
     useEffect(() => {
         if(selectSeller != null) {
             setSellerId(selectSeller.value);
         }
     }, [selectSeller]);
+
     async function getData() {
         const resp = await axios.post('/getAmazonSeller', {});
         if (resp.status == 200) {
@@ -47,6 +61,7 @@ export default function AmazonSellerMail() {
         }
         const data = {
             'id': selectSeller.value,
+            'discount': discount.value,
         };
         const ret = await axios.post('/sendAmazonMail', data);
         if (ret.status == 200) {
@@ -69,7 +84,13 @@ export default function AmazonSellerMail() {
                         defaultValue={selectSeller}
                         onChange={setSelectSeller}
                         options={sellerData}
-                        className="w-full col-span-10"
+                        className="w-full col-span-7"
+                    />
+                    <Select
+                        defaultValue={discount}
+                        onChange={setDiscount}
+                        options={options}
+                        className="w-full col-span-3"
                     />
                     <button className="col-span-2
                 dark:bg-primary border border-primary cursor-pointer
@@ -80,7 +101,7 @@ export default function AmazonSellerMail() {
             </div>
             <div className="grid grid-cols-12">
                 <div className="col-span-12">
-                    <AmazonDiscount sellerId = {sellerId}/>
+                    <AmazonDiscount sellerId = {sellerId} discount = {discount.value} />
                 </div>
                 <div className="col-span-12 mt-8">
                     <AmazonMailTable reload={reloadMailTable} />

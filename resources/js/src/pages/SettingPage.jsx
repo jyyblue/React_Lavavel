@@ -37,11 +37,30 @@ const weekDays = [
         name: 'Saturday',
     },
 ];
+
+const discountFilter = [
+    {
+        value: '0',
+        name: 'All',
+    },
+    {
+        value: '1',
+        name: '>= 20%',
+    },
+];
 export default function SettingPage() {
     const [googleDay1, setGoogleDay1] = useState({});
     const [googleDay2, setGoogleDay2] = useState({});
     const [amazonDay1, setAmazonDay1] = useState({});
     const [amazonDay2, setAmazonDay2] = useState({});
+
+    const [amazonMainMail, setAmazonMainMail] = useState({});
+    const [amazonAgentMail, setAmazonAgentMail] = useState({});
+    const [amazonFilter, setAmazonFilter] = useState({});
+
+    const [googleMainMail, setGoogleMainMail] = useState({});
+    const [googleAgentMail, setGoogleAgentMail] = useState({});
+    const [googleFilter, setGoogleFilter] = useState({});
 
     async function getData() {
         const res = await axios.post('/setting/getSetting', {});
@@ -59,12 +78,44 @@ export default function SettingPage() {
             const ad2 = setting.find(item => {
                 return item.category == 'cron' && item.name == 'amazon_week2';
             });
+
+            const aMainMail = setting.find(item => {
+                return item.category == 'mail' && item.name == 'amazon_main';
+            });
+
+            const aAgentMail = setting.find(item => {
+                return item.category == 'mail' && item.name == 'amazon_agent';
+            });            
+            
+            const aFilter = setting.find(item => {
+                return item.category == 'discount' && item.name == 'amazon';
+            });
+
+            const gMainMail = setting.find(item => {
+                return item.category == 'mail' && item.name == 'google_main';
+            });
+
+            const gAgentMail = setting.find(item => {
+                return item.category == 'mail' && item.name == 'google_agent';
+            });            
+            
+            const gFilter = setting.find(item => {
+                return item.category == 'discount' && item.name == 'google';
+            });
+
             setGoogleDay1(gd1);
             setGoogleDay2(gd2);
             setAmazonDay1(ad1);
             setAmazonDay2(ad2);
+
+            setAmazonMainMail(aMainMail);
+            setAmazonAgentMail(aAgentMail);
+            setAmazonFilter(aFilter);
+
+            setGoogleMainMail(gMainMail);
+            setGoogleAgentMail(gAgentMail);
+            setGoogleFilter(gFilter);
         }
-        console.log(res);
     }
 
     useEffect(() => {
@@ -116,7 +167,70 @@ export default function SettingPage() {
                 updateSetting(a2);
                 setAmazonDay2(a2);
                 break;
-
+            case 'amazon_main_mail':
+                let checked = e.target.checked ? '1' : '0';
+                const aMMail = {
+                    'id': amazonMainMail.id,
+                    'category': amazonMainMail.category,
+                    'name': amazonMainMail.name,
+                    value: checked
+                };
+                updateSetting(aMMail);
+                setAmazonMainMail(aMMail);
+                break;                
+            case 'amazon_agent_mail':
+                let checked_aa = e.target.checked ? '1' : '0';
+                const aAMail = {
+                    'id': amazonAgentMail.id,
+                    'category': amazonAgentMail.category,
+                    'name': amazonAgentMail.name,
+                    value: checked_aa
+                };
+                updateSetting(aAMail);
+                setAmazonAgentMail(aAMail);
+                break;
+            case 'amazon_filter':
+                const af = {
+                    'id': amazonFilter.id,
+                    'category': amazonFilter.category,
+                    'name': amazonFilter.name,
+                    value: value
+                };
+                updateSetting(af);
+                setAmazonFilter(af);
+                break;                             
+            case 'google_main_mail':
+                let checked_g = e.target.checked ? '1' : '0';
+                const gMMail = {
+                    'id': googleMainMail.id,
+                    'category': googleMainMail.category,
+                    'name': googleMainMail.name,
+                    value: checked_g
+                };
+                updateSetting(gMMail);
+                setGoogleMainMail(gMMail);
+                break;                
+            case 'google_agent_mail':
+                let checked_ga = e.target.checked ? '1' : '0';
+                const gAMail = {
+                    'id': googleAgentMail.id,
+                    'category': googleAgentMail.category,
+                    'name': googleAgentMail.name,
+                    value: checked_ga
+                };
+                updateSetting(gAMail);
+                setGoogleAgentMail(gAMail);
+                break;
+            case 'google_filter':
+                const gf = {
+                    'id': googleFilter.id,
+                    'category': googleFilter.category,
+                    'name': googleFilter.name,
+                    value: value
+                };
+                updateSetting(gf);
+                setGoogleFilter(gf);
+                break;                             
             default:
                 break;
         }
@@ -225,6 +339,109 @@ export default function SettingPage() {
                 </div>
             </div>
 
+            <div className="mt-8">
+                <label>Auto Mail Setting ( Amazon ) </label>
+
+                <div className="p-5 grid grid-cols-12 gap-6 border border-spacing-4 rounded-lg">
+                    <div className="col-span-4">
+                        <label htmlFor="amazon_main_mail">Main Mail</label>
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="amazon_main_mail"
+                                name="amazon_main_mail"
+                                className="bg-transparent border rounded-sm p-1.5"
+                                onChange={onChangeSelect}
+                                value="amazon_main_mail"
+                                checked={amazonMainMail.value == '1' ? true : false}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-span-4">
+                        <label htmlFor="amazon_agent_mail">Sales Agent Mail</label>
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="amazon_agent_mail"
+                                name="amazon_agent_mail"
+                                className="bg-transparent border rounded-sm p-1.5"
+                                onChange={onChangeSelect}
+                                value="amazon_agent_mail"
+                                checked={amazonAgentMail.value == '1' ? true : false}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-span-4">
+                        <label>Discount Filter</label>
+                        <div>
+                            <select
+                                className="bg-transparent border rounded-sm p-1.5"
+                                name='amazon_filter'
+                                onChange={onChangeSelect}
+                                value={amazonFilter.value}
+                            >
+                                {
+                                    discountFilter.map((item) => (
+                                        <option key={item.value} value={item.value}>{item.name}</option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="mt-8">
+                <label>Auto Mail Setting ( Google ) </label>
+
+                <div className="p-5 grid grid-cols-12 gap-6 border border-spacing-4 rounded-lg">
+                    <div className="col-span-4">
+                        <label htmlFor="google_main_mail">Main Mail</label>
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="google_main_mail"
+                                name="google_main_mail"
+                                className="bg-transparent border rounded-sm p-1.5"
+                                onChange={onChangeSelect}
+                                value="google_main_mail"
+                                checked={googleMainMail.value == '1' ? true : false}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-span-4">
+                        <label htmlFor="google_agent_mail">Sales Agent Mail</label>
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="google_agent_mail"
+                                name="google_agent_mail"
+                                className="bg-transparent border rounded-sm p-1.5"
+                                onChange={onChangeSelect}
+                                value="google_agent_mail"
+                                checked={googleAgentMail.value == '1' ? true : false}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-span-4">
+                        <label>Discount Filter</label>
+                        <div>
+                            <select
+                                className="bg-transparent border rounded-sm p-1.5"
+                                name='google_filter'
+                                onChange={onChangeSelect}
+                                value={googleFilter.value}
+                            >
+                                {
+                                    discountFilter.map((item) => (
+                                        <option key={item.value} value={item.value}>{item.name}</option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <ToastContainer />
         </div>
     );

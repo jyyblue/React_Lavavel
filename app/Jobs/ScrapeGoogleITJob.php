@@ -16,6 +16,8 @@ use DateTime;
 use DiDom\Document;
 use DiDom\Query;
 use App\Models\GoogleResults;
+use App\Models\GoogleScrapeHistory;
+use Carbon\Carbon;
 
 class ScrapeGoogleITJob implements ShouldQueue
 {
@@ -44,6 +46,9 @@ class ScrapeGoogleITJob implements ShouldQueue
         $sku = $product->sku;
         $title = str_replace($sku, '', $title);
         $title = trim($title, " \t\n\r\0\x0B-");
+
+        $success = 0;
+        $fail = 0;
 
         // scraperapi
         $google_id = $product->google_id;
@@ -85,6 +90,11 @@ class ScrapeGoogleITJob implements ShouldQueue
                     if (gettype($response2) === 'string') {
                         $document2 = new Document($response2, false);
                         $rows = $document2->find('#sh-osd__online-sellers-cont .sh-osd__offer-row');
+                        if(count($rows) > 0) {
+                            $success = 1;
+                        }else{
+                            $fail = 1;
+                        }
                         foreach ($rows as $key => $row) {
                             $nameNode = $row->child(0);
                             $tmp = count($nameNode->find('.kPMwsc a')) > 0 ? $nameNode->find('.kPMwsc a')[0]->text() : '';
@@ -116,9 +126,16 @@ class ScrapeGoogleITJob implements ShouldQueue
                             $data['offer_link'] = $offer_link;
                             $this->storeData($data);
                         }
+                    }else{
+                        $fail = 1;
                     }
                 } else {
                     $offerNodes = strlen($divContainer) > 0 ? $divContainer->find('.SokQEb') : [];
+                    if(count($offerNodes) > 0) {
+                        $success = 1;
+                    }else{
+                        $fail = 1;
+                    }
                     foreach ($offerNodes as $key => $offer) {
                         $price = count($offer->find('.MVQv4e .zumdYc .DAkZw .aZK3gc')) > 0 ? $offer->find('.MVQv4e .zumdYc .DAkZw .aZK3gc')[0]->text() : '';
                         $price = str_replace(',', '.', $price);
@@ -145,8 +162,20 @@ class ScrapeGoogleITJob implements ShouldQueue
                         $this->storeData($data);
                     }
                 }
+            }else{
+                $fail = 1;
             }
+        } else{
+            $fail = 1;
         }
+        // store history
+        $history = new GoogleScrapeHistory();
+        $history->call_group_id = $this->call_group_id;
+        $history->product_id = $product_id;
+        $history->call_time = Carbon::now();
+        $history->sz_success = $success;
+        $history->sz_fail = $fail;
+        $history->save();
     }
 
     private function storeData($data)
@@ -158,7 +187,7 @@ class ScrapeGoogleITJob implements ShouldQueue
         $item_price = $data['item_price'] ? $data['item_price'] : 0;
         $offer_link = $data['offer_link'] ? $data['offer_link'] : '';
 
-        if($total_price > 0 && $product_id > 0 && $item_price > 0) {
+        if ($total_price > 0 && $product_id > 0 && $item_price > 0) {
             // store in database.
             GoogleResults::create([
                 'product_id' => $product_id,

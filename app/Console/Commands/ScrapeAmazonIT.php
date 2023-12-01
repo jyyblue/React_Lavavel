@@ -7,10 +7,11 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product;
 use App\Models\AmazonResults;
-use DiDom\Document;
-
+use App\Models\AmazonSeller;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
+use App\Models\Setting;
+use App\Jobs\AmazonMailJob;
 use Throwable;
 
 class ScrapeAmazonIT extends Command
@@ -39,6 +40,7 @@ class ScrapeAmazonIT extends Command
             $fail = 0;
             $failError = array();
             $batchJob = array();
+
             $product_list = Product::where('cron_flg_amazon', 0)->get();
             $count = count($product_list);
             if($count == 0) {
@@ -87,9 +89,63 @@ class ScrapeAmazonIT extends Command
                 // The batch has finished executing...
                 $processedJobs = $batch->processedJobs();
                 $failedJobs = $batch->failedJobs;
+
             })->allowFailures()->dispatch();
+
+            $this->MailQueue();
         } catch (\Exception $e) {
             Log::info('Error: handle' . $e->getMessage());
+        }
+    }
+
+    private function MailQueue() {
+        $mainMail = Setting::where('category', 'mail')->where('name', 'amazon_main')->first();
+        $agentMail = Setting::where('category', 'mail')->where('name', 'amazon_agent')->first();
+        $discount = Setting::where('category', 'discount')->where('name', 'amazon')->first();
+        $batchJob1 = array();
+        $batchJob2 = array();
+        if($mainMail->value == '1') {
+            $sellers = AmazonSeller::whereNotNull('email')->get();
+
+            foreach ($sellers as $key => $seller) {
+                $data = [
+                    'seller' => $seller,
+                    'discount' => $discount->value,
+                    'email' => $seller->email,
+                ];
+                $job = new AmazonMailJob($data);
+                array_push($batchJob1, $job);
+            }
+
+            $batch1 = Bus::batch($batchJob1)->then(function (Batch $batch) {
+                // All jobs completed successfully...
+            })->catch(function (Batch $batch, Throwable $e) {
+                // First batch job failure detected...
+            })->finally(function (Batch $batch){
+                // The batch has finished executing...
+            })->allowFailures()->dispatch();
+        }
+
+        if($agentMail->value == '1')  {
+            $sellers = AmazonSeller::whereNotNull('sales_agent_email')->get();
+
+            foreach ($sellers as $key => $seller) {
+                $data = [
+                    'seller' => $seller,
+                    'discount' => $discount,
+                    'email' => $seller->sales_agent_email,
+                ];
+                $job = new AmazonMailJob($data);
+                array_push($batchJob2, $job);
+            }
+
+            $batch1 = Bus::batch($batchJob2)->then(function (Batch $batch) {
+                // All jobs completed successfully...
+            })->catch(function (Batch $batch, Throwable $e) {
+                // First batch job failure detected...
+            })->finally(function (Batch $batch){
+                // The batch has finished executing...
+            })->allowFailures()->dispatch();
         }
     }
 }

@@ -42,5 +42,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/setting/getSetting', [SettingController::class, 'getSetting']);
     Route::post('/setting/updateSetting', [SettingController::class, 'updateSetting']);
+
+    Route::post('/history/getAmazonScrapeHistory', [SettingController::class, 'getAmazonScrapeHistory']);
+    Route::post('/history/getGoogleScrapeHistory', [SettingController::class, 'getGoogleScrapeHistory']);
 });
 
