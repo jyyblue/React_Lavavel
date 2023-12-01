@@ -46,7 +46,7 @@ function useSkipper() {
     return [shouldSkip, skip];
 }
 
-export default function GoogleDiscount({sellerId}) {
+export default function GoogleDiscount({sellerId, discount}) {
     const columns = React.useMemo(
         () => [
             {
@@ -96,8 +96,9 @@ export default function GoogleDiscount({sellerId}) {
         };
 
         const data = {
-            sellerId : sellerId
-        };
+            sellerId : sellerId,
+            discount,
+        }
         
         const resp = await axios.post('/getTopGoogle', data);
         if(resp.status == 200) {
@@ -108,7 +109,7 @@ export default function GoogleDiscount({sellerId}) {
 
     useEffect(() => {
         getData();
-    }, [sellerId]);
+    }, [sellerId, discount]);
 
     const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
 

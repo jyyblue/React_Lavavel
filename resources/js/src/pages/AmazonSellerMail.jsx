@@ -52,7 +52,6 @@ export default function AmazonSellerMail() {
             });
             setSellerData(temp);
         }
-        console.log(resp);
     }
 
     const onClickSend = async () => {
