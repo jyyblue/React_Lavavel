@@ -41,39 +41,39 @@ class ScrapeGoogleIT extends Command
             $fail = 0;
             $failError = array();
             $batchJob = array();
-    
+
             $product_list = Product::where('cron_flg', 0)->get();
-            if(count($product_list) == 0) {
-                return ;
+            if (count($product_list) == 0) {
+                return;
             }
             $call_result = GoogleResults::orderBy('call_group_id', 'DESC')->first();
             $call_group_id = 0;
-            if(!empty($call_result)) {
+            if (!empty($call_result)) {
                 $call_group_id = $call_result->call_group_id;
             }
-            $call_group_id ++;
+            $call_group_id++;
             foreach ($product_list as $key => $item) {
-                try{
+                try {
                     $data = [
                         'data_id' => $item->id,
                         'call_group_id' => $call_group_id,
                     ];
                     $job = new ScrapeGoogleITJob($data);
                     array_push($batchJob, $job);
-                    $success ++;
-                }catch(\Exception $e) {
+                    $success++;
+                } catch (\Exception $e) {
                     $fail++;
                     array_push($failError, $e->getMessage());
                 }
             }
-    
+
             Product::where('cron_flg', 0)->update(['cron_flg' => 1]);
 
             $batch = Bus::batch($batchJob)->then(function (Batch $batch) {
                 // All jobs completed successfully...
             })->catch(function (Batch $batch, Throwable $e) {
                 // First batch job failure detected...
-            })->finally(function (Batch $batch){
+            })->finally(function (Batch $batch) {
                 // The batch has finished executing...
                 $processedJobs = $batch->processedJobs();
                 $failedJobs = $batch->failedJobs;
@@ -86,54 +86,50 @@ class ScrapeGoogleIT extends Command
         }
     }
 
-    private function MailQueue() {
-        $mainMail = Setting::where('category', 'mail')->where('name', 'google_main')->first();
-        $agentMail = Setting::where('category', 'mail')->where('name', 'google_agent')->first();
+    private function MailQueue()
+    {
         $discount = Setting::where('category', 'discount')->where('name', 'google')->first();
         $batchJob1 = array();
         $batchJob2 = array();
-        if($mainMail->value == '1') {
-            $sellers = GoogleSeller::whereNotNull('email')->get();
+        $sellers = GoogleSeller::whereNotNull('email')->where('email_flg', '1')->get();
 
-            foreach ($sellers as $key => $seller) {
-                $data = [
-                    'seller' => $seller,
-                    'discount' => $discount->value,
-                    'email' => $seller->email,
-                ];
-                $job = new GoogleMailJob($data);
-                array_push($batchJob1, $job);
-            }
-
-            $batch1 = Bus::batch($batchJob1)->then(function (Batch $batch) {
-                // All jobs completed successfully...
-            })->catch(function (Batch $batch, Throwable $e) {
-                // First batch job failure detected...
-            })->finally(function (Batch $batch){
-                // The batch has finished executing...
-            })->allowFailures()->dispatch();
+        foreach ($sellers as $key => $seller) {
+            $data = [
+                'seller' => $seller,
+                'discount' => $discount->value,
+                'email' => $seller->email,
+            ];
+            $job = new GoogleMailJob($data);
+            array_push($batchJob1, $job);
         }
 
-        if($agentMail->value == '1')  {
-            $sellers = GoogleSeller::whereNotNull('sales_agent_email')->get();
+        $batch1 = Bus::batch($batchJob1)->then(function (Batch $batch) {
+            // All jobs completed successfully...
+        })->catch(function (Batch $batch, Throwable $e) {
+            // First batch job failure detected...
+        })->finally(function (Batch $batch) {
+            // The batch has finished executing...
+        })->allowFailures()->dispatch();
 
-            foreach ($sellers as $key => $seller) {
-                $data = [
-                    'seller' => $seller,
-                    'discount' => $discount,
-                    'email' => $seller->sales_agent_email,
-                ];
-                $job = new GoogleMailJob($data);
-                array_push($batchJob2, $job);
-            }
 
-            $batch1 = Bus::batch($batchJob2)->then(function (Batch $batch) {
-                // All jobs completed successfully...
-            })->catch(function (Batch $batch, Throwable $e) {
-                // First batch job failure detected...
-            })->finally(function (Batch $batch){
-                // The batch has finished executing...
-            })->allowFailures()->dispatch();
+        $sellers = GoogleSeller::whereNotNull('sales_agent_email')->where('agent_flg', '1')->get();
+
+        foreach ($sellers as $key => $seller) {
+            $data = [
+                'seller' => $seller,
+                'discount' => $discount,
+                'email' => $seller->sales_agent_email,
+            ];
+            $job = new GoogleMailJob($data);
+            array_push($batchJob2, $job);
         }
+
+        $batch1 = Bus::batch($batchJob2)->then(function (Batch $batch) {
+            // All jobs completed successfully...
+        })->catch(function (Batch $batch, Throwable $e) {
+            // First batch job failure detected...
+        })->finally(function (Batch $batch) {
+            // The batch has finished executing...
+        })->allowFailures()->dispatch();
     }
 }

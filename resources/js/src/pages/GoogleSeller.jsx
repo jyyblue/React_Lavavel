@@ -23,6 +23,15 @@ const defaultColumn = {
                 table.options.meta?.updateData(index, id, value);
             }
         };
+        
+        const onChangeSelect = (e) => {
+            let checked = e.target.checked;
+            let _value = checked ? '1': '0';
+            setValue(_value);
+            if (initialValue !== _value) {
+                table.options.meta?.updateData(index, id, _value);
+            }
+        };
 
         // If the initialValue is changed external, sync it up with our state
         useEffect(() => {
@@ -37,6 +46,21 @@ const defaultColumn = {
                     onChange={(e) => setValue(e.target.value)}
                     onBlur={onBlur}
                 />
+            );
+        }else if (id == "email_flg" || id == "agent_flg") {
+
+            return (
+                <div
+                className="w-full border-b border-stroke bg-transparent py-3 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-gray-100 dark:focus:border-primary"
+                >
+                    <input
+                        type="checkbox"
+                        className="w-full"
+                        onChange={(e) => onChangeSelect(e)}
+                        value={value}
+                        checked={value == "1" ? true : false}
+                    />
+                </div>
             );
         }else {
             return (
@@ -119,6 +143,12 @@ export default function GoogleSeller() {
                 footer: (props) => props.column.id,
             },
             {
+                header: "Send Auto Email",
+                accessorFn: (row) => row.email_flg,
+                id: "email_flg",
+                footer: (props) => props.column.id,
+            },
+            {
                 header: "SALES AGENT NAME",
                 accessorFn: row => row.sales_agent_name,
                 id: 'sales_agent_name',
@@ -128,6 +158,12 @@ export default function GoogleSeller() {
                 header: "SALES AGENT EMAIL",
                 accessorFn: row => row.sales_agent_email,
                 id: 'sales_agent_email',
+                footer: (props) => props.column.id,
+            },
+            {
+                header: "Send AGENT EMAIL",
+                accessorFn: (row) => row.agent_flg,
+                id: "agent_flg",
                 footer: (props) => props.column.id,
             },
         ],
@@ -174,7 +210,7 @@ export default function GoogleSeller() {
                             f(data).then((ret) => {
                                 toast('Updated Successfully!', {
                                     position: "bottom-right",
-                                    autoClose: 5000,
+                                    autoClose: 1000,
                                     hideProgressBar: false,
                                     closeOnClick: true,
                                     pauseOnHover: true,
@@ -356,6 +392,15 @@ function Filter({ column, table }) {
 
     const columnFilterValue = column.getFilterValue();
 
+    return (
+        <input
+            className="w-full rounded-lg border border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+            type="text"
+            value={columnFilterValue ?? ""}
+            onChange={(e) => column.setFilterValue(e.target.value)}
+            placeholder={`Search...`}
+        />
+    );
     return typeof firstValue === "number" ? (
         <div className="flex space-x-2">
             <input

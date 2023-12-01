@@ -33,5 +33,7 @@ class GoogleSeller extends Model
         'email',
         'sales_agent_name',
         'sales_agent_email',
+        'email_flg',
+        'agent_flg',
     ];
 }

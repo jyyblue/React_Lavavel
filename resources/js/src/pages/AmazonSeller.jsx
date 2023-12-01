@@ -7,8 +7,8 @@ import {
     getPaginationRowModel,
     flexRender,
 } from "@tanstack/react-table";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { api_url } from "../constant";
 // Give our default column cell renderer editing superpowers!
 const defaultColumn = {
@@ -19,7 +19,7 @@ const defaultColumn = {
 
         // When the input is blurred, we'll call our table meta's updateData function
         const onBlur = () => {
-            if(initialValue !== value) {
+            if (initialValue !== value) {
                 table.options.meta?.updateData(index, id, value);
             }
         };
@@ -29,7 +29,21 @@ const defaultColumn = {
             setValue(initialValue);
         }, [initialValue]);
 
-        if(id == 'email' || id == 'sales_agent_name' || id == 'sales_agent_email') {
+        
+        const onChangeSelect = (e) => {
+            let checked = e.target.checked;
+            let _value = checked ? '1': '0';
+            setValue(_value);
+            if (initialValue !== _value) {
+                table.options.meta?.updateData(index, id, _value);
+            }
+        };
+
+        if (
+            id == "email" ||
+            id == "sales_agent_name" ||
+            id == "sales_agent_email"
+        ) {
             return (
                 <input
                     className="w-full border-b border-stroke bg-transparent py-3 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-gray-100 dark:focus:border-primary"
@@ -38,7 +52,22 @@ const defaultColumn = {
                     onBlur={onBlur}
                 />
             );
-        }else {
+        } else if (id == "email_flg" || id == "agent_flg") {
+
+            return (
+                <div
+                className="w-full border-b border-stroke bg-transparent py-3 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-gray-100 dark:focus:border-primary"
+                >
+                    <input
+                        type="checkbox"
+                        className="w-full"
+                        onChange={(e) => onChangeSelect(e)}
+                        value={value}
+                        checked={value == "1" ? true : false}
+                    />
+                </div>
+            );
+        } else {
             return (
                 <input
                     className="w-full border-b border-stroke bg-transparent py-3 pl-1 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -68,86 +97,100 @@ function useSkipper() {
 }
 
 export default function AmazonSeller() {
-    const [importFile, setImportFile] = useState('');
+    const [importFile, setImportFile] = useState("");
     const openExport = () => {
-        window.open(api_url +'/amazonSeller/export', '_blank');
-    }
-    const inputFile = useRef(null) 
+        window.open(api_url + "/amazonSeller/export", "_blank");
+    };
+    const inputFile = useRef(null);
     const onImportClick = () => {
         // `current` points to the mounted file input element
         inputFile.current.click();
     };
     const handleFileChange = (e) => {
         if (e.target.files) {
-          handleUploadClick(e.target.files[0]);
+            handleUploadClick(e.target.files[0]);
         }
     };
     const handleUploadClick = async (file) => {
         if (!file) {
-            toast('File is empty');
-          return;
+            toast("File is empty");
+            return;
         }
         let config = {
             headers: {
-                'content-type': 'multipart/form-data'
-            }
-          }
+                "content-type": "multipart/form-data",
+            },
+        };
         let importData = new FormData();
         importData.append("file", file);
         // 👇 Uploading the file using the fetch API to the server
-        axios.post(api_url + '/amazonSeller/import', importData, config).then((res) => {
-            console.log(res);
-            toast('Imported Successfully!');
-            setImportFile('');
-            getData();
-        });
+        axios
+            .post(api_url + "/amazonSeller/import", importData, config)
+            .then((res) => {
+                console.log(res);
+                toast("Imported Successfully!");
+                setImportFile("");
+                getData();
+            });
     };
 
     const columns = React.useMemo(
         () => [
             {
                 header: "SELLER ID",
-                accessorFn: row => row.amazon_id,
-                id: 'amazon_id',
+                accessorFn: (row) => row.amazon_id,
+                id: "amazon_id",
                 footer: (props) => props.column.id,
             },
             {
                 header: "Name",
                 // accessorKey: "name",
-                accessorFn: row => row.name,
-                id: 'name',
+                accessorFn: (row) => row.name,
+                id: "name",
                 footer: (props) => props.column.id,
             },
             {
                 header: "Email",
-                accessorFn: row => row.email,
-                id: 'email',
+                accessorFn: (row) => row.email,
+                id: "email",
+                footer: (props) => props.column.id,
+            },
+            {
+                header: "Send Auto Email",
+                accessorFn: (row) => row.email_flg,
+                id: "email_flg",
                 footer: (props) => props.column.id,
             },
             {
                 header: "SALES AGENT NAME",
-                accessorFn: row => row.sales_agent_name,
-                id: 'sales_agent_name',
+                accessorFn: (row) => row.sales_agent_name,
+                id: "sales_agent_name",
                 footer: (props) => props.column.id,
             },
             {
                 header: "SALES AGENT EMAIL",
-                accessorFn: row => row.sales_agent_email,
-                id: 'sales_agent_email',
+                accessorFn: (row) => row.sales_agent_email,
+                id: "sales_agent_email",
+                footer: (props) => props.column.id,
+            },
+            {
+                header: "Send AGENT EMAIL",
+                accessorFn: (row) => row.agent_flg,
+                id: "agent_flg",
                 footer: (props) => props.column.id,
             },
         ],
         []
     );
     const [data, setData] = useState([]);
-    async function getData () {
-        const resp = await axios.post('/getAmazonSeller', {});
-        if(resp.status == 200) {
+    async function getData() {
+        const resp = await axios.post("/getAmazonSeller", {});
+        if (resp.status == 200) {
             setData(resp.data.data);
         }
         console.log(resp);
     }
-    useEffect(()=> {
+    useEffect(() => {
         getData();
     }, []);
 
@@ -167,33 +210,35 @@ export default function AmazonSeller() {
                 // Skip page index reset until after next rerender
                 skipAutoResetPageIndex();
                 console.log(rowIndex, columnId, value);
-                
+
                 setData((old) =>
                     old.map((row, index) => {
                         if (index === rowIndex) {
                             let data = old[rowIndex];
                             data[columnId] = value;
-                            const f = async (data)=> {
-                                const resp = await axios.post('/updateAmazonSeller', data);
+                            const f = async (data) => {
+                                const resp = await axios.post(
+                                    "/updateAmazonSeller",
+                                    data
+                                );
                                 return resp;
-                            }
+                            };
                             f(data).then((ret) => {
-                                toast('Updated Successfully!', {
+                                toast("Updated Successfully!", {
                                     position: "bottom-right",
-                                    autoClose: 5000,
+                                    autoClose: 1000,
                                     hideProgressBar: false,
                                     closeOnClick: true,
                                     pauseOnHover: true,
                                     draggable: true,
                                     progress: undefined,
                                     theme: "colored",
-                                    });
+                                });
                                 return {
                                     ...old[rowIndex],
                                     [columnId]: value,
                                 };
                             });
-                                
                         }
                         return row;
                     })
@@ -205,26 +250,34 @@ export default function AmazonSeller() {
     return (
         <div className="p-2">
             <div className="h-2" />
-            <div className="mb-3 text-lg font-bold"><h1>Sellers / Amazon</h1></div>
+            <div className="mb-3 text-lg font-bold">
+                <h1>Sellers / Amazon</h1>
+            </div>
             <div>
-                <button className="
+                <button
+                    className="
                 dark:bg-primary border border-primary cursor-pointer
                 dark:hover:bg-opacity-80 p-3 rounded-lg text-white transition mr-3"
-                onClick={openExport}
-                >Export</button>
-                <button className="
+                    onClick={openExport}
+                >
+                    Export
+                </button>
+                <button
+                    className="
                 dark:bg-primary border border-primary cursor-pointer
                 dark:hover:bg-opacity-80 p-3 rounded-lg text-white transition"
-                onClick={onImportClick}
-                >Import</button>
+                    onClick={onImportClick}
+                >
+                    Import
+                </button>
                 <input
-                onChange={handleFileChange} 
-                type='file' 
-                id='file' 
-                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                ref={inputFile} 
-                style={{display: 'none'}}
-                value={importFile}
+                    onChange={handleFileChange}
+                    type="file"
+                    id="file"
+                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                    ref={inputFile}
+                    style={{ display: "none" }}
+                    value={importFile}
                 />
             </div>
             <table className="w-full">
@@ -362,6 +415,15 @@ function Filter({ column, table }) {
 
     const columnFilterValue = column.getFilterValue();
 
+    return (
+        <input
+            className="w-full rounded-lg border border-stroke bg-transparent py-3 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+            type="text"
+            value={columnFilterValue ?? ""}
+            onChange={(e) => column.setFilterValue(e.target.value)}
+            placeholder={`Search...`}
+        />
+    )
     return typeof firstValue === "number" ? (
         <div className="flex space-x-2">
             <input

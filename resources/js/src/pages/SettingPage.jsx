@@ -343,7 +343,7 @@ export default function SettingPage() {
                 <label>Auto Mail Setting ( Amazon ) </label>
 
                 <div className="p-5 grid grid-cols-12 gap-6 border border-spacing-4 rounded-lg">
-                    <div className="col-span-4">
+                    {/* <div className="col-span-4">
                         <label htmlFor="amazon_main_mail">Main Mail</label>
                         <div>
                             <input
@@ -370,7 +370,7 @@ export default function SettingPage() {
                                 checked={amazonAgentMail.value == '1' ? true : false}
                             />
                         </div>
-                    </div>
+                    </div> */}
                     <div className="col-span-4">
                         <label>Discount Filter</label>
                         <div>
@@ -395,7 +395,7 @@ export default function SettingPage() {
                 <label>Auto Mail Setting ( Google ) </label>
 
                 <div className="p-5 grid grid-cols-12 gap-6 border border-spacing-4 rounded-lg">
-                    <div className="col-span-4">
+                    {/* <div className="col-span-4">
                         <label htmlFor="google_main_mail">Main Mail</label>
                         <div>
                             <input
@@ -422,7 +422,7 @@ export default function SettingPage() {
                                 checked={googleAgentMail.value == '1' ? true : false}
                             />
                         </div>
-                    </div>
+                    </div> */}
                     <div className="col-span-4">
                         <label>Discount Filter</label>
                         <div>

@@ -43,37 +43,37 @@ class ScrapeAmazonIT extends Command
 
             $product_list = Product::where('cron_flg_amazon', 0)->get();
             $count = count($product_list);
-            if($count == 0) {
+            if ($count == 0) {
                 return;
             }
             $call_result = AmazonResults::orderBy('call_group_id', 'DESC')->first();
             $call_group_id = 0;
-            if(!empty($call_result)) {
+            if (!empty($call_result)) {
                 $call_group_id = $call_result->call_group_id;
             }
-            $call_group_id ++;
+            $call_group_id++;
 
             $size = 20;
             $szHeap = ceil($count / $size);
-            for($i=0; $i < $szHeap; $i++) {
+            for ($i = 0; $i < $szHeap; $i++) {
                 $start = $i * $size;
                 $end = min(($i + 1) * $size, $count);
                 $ids = array();
-                for($j=$start; $j < $end; $j++) {
+                for ($j = $start; $j < $end; $j++) {
                     $p = $product_list[$j];
                     array_push($ids, $p->id);
                 }
-                try{
-                    if(count($ids) > 0){
+                try {
+                    if (count($ids) > 0) {
                         $data = [
                             'data_id' => $ids,
                             'call_group_id' => $call_group_id
                         ];
                         $job = new ScrapeAmazonITJob($data);
                         array_push($batchJob, $job);
-                        $success ++;
+                        $success++;
                     }
-                }catch(\Exception $e) {
+                } catch (\Exception $e) {
                     $fail++;
                     array_push($failError, $e->getMessage());
                 }
@@ -85,11 +85,10 @@ class ScrapeAmazonIT extends Command
                 // All jobs completed successfully...
             })->catch(function (Batch $batch, Throwable $e) {
                 // First batch job failure detected...
-            })->finally(function (Batch $batch){
+            })->finally(function (Batch $batch) {
                 // The batch has finished executing...
                 $processedJobs = $batch->processedJobs();
                 $failedJobs = $batch->failedJobs;
-
             })->allowFailures()->dispatch();
 
             $this->MailQueue();
@@ -98,54 +97,49 @@ class ScrapeAmazonIT extends Command
         }
     }
 
-    private function MailQueue() {
-        $mainMail = Setting::where('category', 'mail')->where('name', 'amazon_main')->first();
-        $agentMail = Setting::where('category', 'mail')->where('name', 'amazon_agent')->first();
+    private function MailQueue()
+    {
         $discount = Setting::where('category', 'discount')->where('name', 'amazon')->first();
         $batchJob1 = array();
         $batchJob2 = array();
-        if($mainMail->value == '1') {
-            $sellers = AmazonSeller::whereNotNull('email')->get();
+        $sellers = AmazonSeller::whereNotNull('email')->where('email_flg', '1')->get();
 
-            foreach ($sellers as $key => $seller) {
-                $data = [
-                    'seller' => $seller,
-                    'discount' => $discount->value,
-                    'email' => $seller->email,
-                ];
-                $job = new AmazonMailJob($data);
-                array_push($batchJob1, $job);
-            }
-
-            $batch1 = Bus::batch($batchJob1)->then(function (Batch $batch) {
-                // All jobs completed successfully...
-            })->catch(function (Batch $batch, Throwable $e) {
-                // First batch job failure detected...
-            })->finally(function (Batch $batch){
-                // The batch has finished executing...
-            })->allowFailures()->dispatch();
+        foreach ($sellers as $key => $seller) {
+            $data = [
+                'seller' => $seller,
+                'discount' => $discount->value,
+                'email' => $seller->email,
+            ];
+            $job = new AmazonMailJob($data);
+            array_push($batchJob1, $job);
         }
 
-        if($agentMail->value == '1')  {
-            $sellers = AmazonSeller::whereNotNull('sales_agent_email')->get();
+        $batch1 = Bus::batch($batchJob1)->then(function (Batch $batch) {
+            // All jobs completed successfully...
+        })->catch(function (Batch $batch, Throwable $e) {
+            // First batch job failure detected...
+        })->finally(function (Batch $batch) {
+            // The batch has finished executing...
+        })->allowFailures()->dispatch();
 
-            foreach ($sellers as $key => $seller) {
-                $data = [
-                    'seller' => $seller,
-                    'discount' => $discount,
-                    'email' => $seller->sales_agent_email,
-                ];
-                $job = new AmazonMailJob($data);
-                array_push($batchJob2, $job);
-            }
+        $sellers = AmazonSeller::whereNotNull('sales_agent_email')->where('agent_flg', '1')->get();
 
-            $batch1 = Bus::batch($batchJob2)->then(function (Batch $batch) {
-                // All jobs completed successfully...
-            })->catch(function (Batch $batch, Throwable $e) {
-                // First batch job failure detected...
-            })->finally(function (Batch $batch){
-                // The batch has finished executing...
-            })->allowFailures()->dispatch();
+        foreach ($sellers as $key => $seller) {
+            $data = [
+                'seller' => $seller,
+                'discount' => $discount,
+                'email' => $seller->sales_agent_email,
+            ];
+            $job = new AmazonMailJob($data);
+            array_push($batchJob2, $job);
         }
+
+        $batch1 = Bus::batch($batchJob2)->then(function (Batch $batch) {
+            // All jobs completed successfully...
+        })->catch(function (Batch $batch, Throwable $e) {
+            // First batch job failure detected...
+        })->finally(function (Batch $batch) {
+            // The batch has finished executing...
+        })->allowFailures()->dispatch();
     }
 }
