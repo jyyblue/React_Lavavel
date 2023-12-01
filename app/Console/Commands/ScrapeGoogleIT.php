@@ -43,7 +43,7 @@ class ScrapeGoogleIT extends Command
             $batchJob = array();
     
             $product_list = Product::where('cron_flg', 0)->get();
-            if(count($product_list) > 0) {
+            if(count($product_list) == 0) {
                 return ;
             }
             $call_result = GoogleResults::orderBy('call_group_id', 'DESC')->first();
