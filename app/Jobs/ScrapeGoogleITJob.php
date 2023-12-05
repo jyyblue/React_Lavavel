@@ -192,7 +192,7 @@ class ScrapeGoogleITJob implements ShouldQueue
         Log::info('ip: '.$item_price);
         Log::info('---------------------------------');
 
-        if ((float)$total_price > 0 && (int)$product_id > 0 && (float)$item_price > 0) {
+        // if ((float)$total_price > 0 && (float)$item_price > 0) {
             // store in database.
             GoogleResults::create([
                 'product_id' => $product_id,
@@ -203,7 +203,7 @@ class ScrapeGoogleITJob implements ShouldQueue
                 'offer_link' => $offer_link,
                 'call_group_id' => $this->call_group_id,
             ]);
-        }
+        // }
         return;
     }
 }
