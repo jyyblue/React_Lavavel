@@ -107,7 +107,7 @@ class ScrapeAmazonIT extends Command
         foreach ($sellers as $key => $seller) {
             $data = [
                 'seller' => $seller,
-                'discount' => $discount->value,
+                'discount' => 1,
                 'email' => $seller->email,
             ];
             $job = new AmazonMailJob($data);
@@ -127,7 +127,7 @@ class ScrapeAmazonIT extends Command
         foreach ($sellers as $key => $seller) {
             $data = [
                 'seller' => $seller,
-                'discount' => $discount,
+                'discount' => 1,
                 'email' => $seller->sales_agent_email,
             ];
             $job = new AmazonMailJob($data);

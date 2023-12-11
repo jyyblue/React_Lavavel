@@ -96,7 +96,7 @@ class ScrapeGoogleIT extends Command
         foreach ($sellers as $key => $seller) {
             $data = [
                 'seller' => $seller,
-                'discount' => $discount->value,
+                'discount' => 1,
                 'email' => $seller->email,
             ];
             $job = new GoogleMailJob($data);
@@ -117,7 +117,7 @@ class ScrapeGoogleIT extends Command
         foreach ($sellers as $key => $seller) {
             $data = [
                 'seller' => $seller,
-                'discount' => $discount,
+                'discount' => 1,
                 'email' => $seller->sales_agent_email,
             ];
             $job = new GoogleMailJob($data);
